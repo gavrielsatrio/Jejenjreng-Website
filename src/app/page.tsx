@@ -1,14 +1,47 @@
 'use client';
 
 import Image from "next/image";
-import { useEffect } from "react";
+import { useNotion } from "@/hooks/useNotion";
+import { useEffect, useState } from "react";
+
+import { IPage } from "@/interfaces/notions/IPage";
+import { IEvent } from "@/interfaces/models/IEvent";
+
+import { getDateRange } from "@/utils/notions/Date";
 
 import { Event } from "@/components/cards/Event";
 import { Container } from "@/components/Container";
+import { ComponentState } from "@/states/ComponentState";
+
+interface AppPageState extends ComponentState {
+  upcomingEvents: Array<IPage<IEvent>>,
+  pastEvents: Array<IPage<IEvent>>
+}
 
 function App() {
+  const { getUpcomingEvents, getPastEvents } = useNotion();
+
+  const [data, setData] = useState<AppPageState>({
+    loading: true,
+    upcomingEvents: [],
+    pastEvents: []
+  })
+
   const fetchEvents = async () => {
-    
+    setData(prev => ({
+      ...prev,
+      loading: true
+    }));
+
+    const upcomingEvents = await getUpcomingEvents();
+    const pastEvents = await getPastEvents();
+
+    setData(prev => ({
+      ...prev,
+      loading: false,
+      upcomingEvents,
+      pastEvents
+    }));
   }
 
   useEffect(() => {
@@ -22,7 +55,7 @@ function App() {
       <div className="col-span-4 max-h-[calc(100vh-64px)] overflow-y-hidden">
         <h1 className="font-black text-5xl">Jejenjreng</h1>
         <p className="mt-4 text-black/60">Sampaikanlah dariku, walau hanya satu ayat</p>
-        <Image src='/assets/jeje.png' alt="Jeje Portrait" width={1228} height={2160} className="object-contain w-full h-[calc(100%-64px)] p-12" />
+        <Image src='/assets/jeje2.png' alt="Jeje Portrait" width={1228} height={2160} className="object-contain object-left w-full h-[calc(100%-64px)] py-8 px-4" />
       </div>
       <div className="col-span-8 max-h-[calc(100dvh-64px)] overflow-y-auto">
         <div className="flex items-center justify-between mb-6">
@@ -30,15 +63,48 @@ function App() {
           <a href="/events">Manage all events</a>
         </div>
         <div className="flex flex-col gap-y-6">
-          <Event name="CFXX" date="09/11/2025 - 10/11/2025" location="ICE BSD" type="Pickup" orderCount={30} packedCount={5} paidCount={9} pendingCount={16} />
+          {data.loading ? (
+            <>Loading</>
+          ) : (
+            <>
+              {data.upcomingEvents.map(event => (
+                <Event
+                  name={event.properties['Name'].title[0].plain_text}
+                  date={getDateRange(event.properties['Event Date'].date, 'DD/MM/YYYY')}
+                  location={event.properties['Location'].rich_text.reduce((prev, curr) => `${prev} ${curr.plain_text}`, '')}
+                  type={event.properties['Type'].select.name}
+                  orderCount={30}
+                  packedCount={5}
+                  paidCount={9}
+                  pendingCount={16}
+                  key={event.id} />
+              ))}
+            </>
+          )}
         </div>
 
         <div className="flex items-center justify-between mb-6 mt-10">
           <h2 className="font-bold text-3xl">Past Events</h2>
         </div>
         <div className="flex flex-col gap-y-6 mb-16">
-          <Event name="CFXX" date="09/11/2025 - 10/11/2025" location="ICE BSD" type="Mail Order" orderCount={30} packedCount={5} paidCount={9} pendingCount={16} />
-          <Event name="CFXX" date="09/11/2025 - 10/11/2025" location="ICE BSD" type="Mail Order" orderCount={30} packedCount={5} paidCount={9} pendingCount={16} />
+          {data.loading ? (
+            <>Loading</>
+          ) : (
+            <>
+              {data.pastEvents.map(event => (
+                <Event
+                  name={event.properties['Name'].title[0].plain_text}
+                  date={getDateRange(event.properties['Event Date'].date, 'DD/MM/YYYY')}
+                  location={event.properties['Location'].rich_text.reduce((prev, curr) => `${prev} ${curr.plain_text}`, '')}
+                  type={event.properties['Type'].select.name}
+                  orderCount={30}
+                  packedCount={5}
+                  paidCount={9}
+                  pendingCount={16}
+                  key={event.id} />
+              ))}
+            </>
+          )}
         </div>
       </div>
     </Container>

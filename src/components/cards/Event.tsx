@@ -36,7 +36,7 @@ function Event({ name, type, date, location, orderCount, packedCount, paidCount,
               <p className="text-black/60 font-medium text-sm">{location}</p>
             </div>
           </div>
-          <Badge className="bg-sky-500/20 text-sky-500 font-semibold italic self-start flex-none">{type}</Badge>
+          <Badge className="bg-indigo-500/20 text-indigo-500 font-semibold italic self-start flex-none">{type}</Badge>
         </div>
         <div className="flex items-center gap-2 mt-4 flex-wrap">
           <Badge className="bg-orange-500/20 text-orange-500">{orderCount} orders</Badge>

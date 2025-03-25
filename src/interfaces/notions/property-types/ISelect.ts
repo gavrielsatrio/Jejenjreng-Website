@@ -1,5 +1,5 @@
-export interface ISelect {
+export interface ISelect<T> {
   id: string;
-  name: string;
+  name: T;
   color: string;
 }
