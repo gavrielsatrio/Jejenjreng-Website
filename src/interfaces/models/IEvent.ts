@@ -1,3 +1,4 @@
+import { IOrder } from "./IOrder";
 import { EventType } from "@/types/EventType";
 import { IDate, IRichText, ISelect } from "../notions/property-types";
 
@@ -32,4 +33,5 @@ export interface IEvent {
     type: string;
     title: Array<IRichText>
   };
+  "Orders": Array<IOrder>;
 }

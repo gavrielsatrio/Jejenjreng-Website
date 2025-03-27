@@ -1,5 +1,6 @@
 'use client';
 
+import Link from "next/link";
 import Image from "next/image";
 import { useNotion } from "@/hooks/useNotion";
 import { useEffect, useState } from "react";
@@ -7,10 +8,9 @@ import { useEffect, useState } from "react";
 import { IPage } from "@/interfaces/notions/IPage";
 import { IEvent } from "@/interfaces/models/IEvent";
 
-import { getDateRange } from "@/utils/notions/Date";
-
 import { Event } from "@/components/cards/Event";
 import { Container } from "@/components/Container";
+import { SkeletonEvent } from "@/components/skeletons/SkeletonEvent";
 import { ComponentState } from "@/states/ComponentState";
 
 interface AppPageState extends ComponentState {
@@ -25,7 +25,7 @@ function App() {
     loading: true,
     upcomingEvents: [],
     pastEvents: []
-  })
+  });
 
   const fetchEvents = async () => {
     setData(prev => ({
@@ -33,8 +33,7 @@ function App() {
       loading: true
     }));
 
-    const upcomingEvents = await getUpcomingEvents();
-    const pastEvents = await getPastEvents();
+    const [upcomingEvents, pastEvents] = await Promise.all([await getUpcomingEvents(), await getPastEvents()]);
 
     setData(prev => ({
       ...prev,
@@ -60,24 +59,18 @@ function App() {
       <div className="col-span-8 max-h-[calc(100dvh-64px)] overflow-y-auto">
         <div className="flex items-center justify-between mb-6">
           <h2 className="font-bold text-3xl">Upcoming Events</h2>
-          <a href="/events">Manage all events</a>
+          <Link href="/events" className="underline">Manage all events</Link>
         </div>
         <div className="flex flex-col gap-y-6">
           {data.loading ? (
-            <>Loading</>
+            <SkeletonEvent count={2} />
           ) : (
             <>
-              {data.upcomingEvents.map(event => (
+              {data.upcomingEvents.map(eventPage => (
                 <Event
-                  name={event.properties['Name'].title[0].plain_text}
-                  date={getDateRange(event.properties['Event Date'].date, 'DD/MM/YYYY')}
-                  location={event.properties['Location'].rich_text.reduce((prev, curr) => `${prev} ${curr.plain_text}`, '')}
-                  type={event.properties['Type'].select.name}
-                  orderCount={30}
-                  packedCount={5}
-                  paidCount={9}
-                  pendingCount={16}
-                  key={event.id} />
+                  notionPageID={eventPage.id}
+                  event={eventPage.properties}
+                  key={eventPage.id} />
               ))}
             </>
           )}
@@ -88,20 +81,14 @@ function App() {
         </div>
         <div className="flex flex-col gap-y-6 mb-16">
           {data.loading ? (
-            <>Loading</>
+            <SkeletonEvent count={3} />
           ) : (
             <>
-              {data.pastEvents.map(event => (
+              {data.pastEvents.map(eventPage => (
                 <Event
-                  name={event.properties['Name'].title[0].plain_text}
-                  date={getDateRange(event.properties['Event Date'].date, 'DD/MM/YYYY')}
-                  location={event.properties['Location'].rich_text.reduce((prev, curr) => `${prev} ${curr.plain_text}`, '')}
-                  type={event.properties['Type'].select.name}
-                  orderCount={30}
-                  packedCount={5}
-                  paidCount={9}
-                  pendingCount={16}
-                  key={event.id} />
+                  notionPageID={eventPage.id}
+                  event={eventPage.properties}
+                  key={eventPage.id} />
               ))}
             </>
           )}

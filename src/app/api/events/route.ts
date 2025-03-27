@@ -1,6 +1,8 @@
-import { IEvent } from "@/interfaces/models/IEvent";
 import { IPage } from "@/interfaces/notions/IPage";
+import { IEvent } from "@/interfaces/models/IEvent";
 import { Client } from "@notionhq/client";
+import { getOrders } from "@/utils/spreadsheets/Order";
+import { getSpreadsheetID } from "@/utils/spreadsheets/ID";
 
 export async function GET(request: Request) {
   const notion = new Client({
@@ -18,7 +20,25 @@ export async function GET(request: Request) {
     ]
   });
 
-  const results = response.results as Array<IPage<IEvent>>;
+  let results = response.results as Array<IPage<IEvent>>;
+  results = await Promise.all(
+    results.map(async eventPage => {
+      const spreadsheetLink = eventPage.properties['Link Spreadsheet'].rich_text.length > 0 ? eventPage.properties['Link Spreadsheet'].rich_text[0].plain_text : '';
+      const spreadsheetID = getSpreadsheetID(spreadsheetLink);
+      const orders = await getOrders({
+        spreadsheetID,
+        eventType: eventPage.properties["Type"].select.name
+      });
+
+      return {
+        ...eventPage,
+        properties: {
+          ...eventPage.properties,
+          "Orders": orders
+        }
+      };
+    })
+  );
 
   return Response.json(results);
 }

@@ -11,10 +11,13 @@
   "dependencies": {
     "@notionhq/client": "^2.3.0",
     "dayjs": "^1.11.13",
+    "google-auth-library": "^9.15.1",
+    "google-spreadsheet": "^4.1.4",
     "next": "15.2.4",
     "numeral": "^2.0.6",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "slug": "^10.0.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
@@ -23,6 +26,7 @@
     "@types/numeral": "^2.0.5",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@types/slug": "^5.0.9",
     "eslint": "^9",
     "eslint-config-next": "15.2.4",
     "tailwindcss": "^4",

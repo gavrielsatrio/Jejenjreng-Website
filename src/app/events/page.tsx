@@ -7,12 +7,11 @@ import { useEffect, useState } from "react";
 import { IPage } from "@/interfaces/notions/IPage";
 import { IEvent } from "@/interfaces/models/IEvent";
 
-import { getDateRange } from "@/utils/notions/Date";
-
 import { Event } from "@/components/cards/Event";
 import { Container } from "@/components/Container";
 import { ChevronLeft } from "@/icons/ChevronLeft";
 import { ComponentState } from "@/states/ComponentState";
+import { SkeletonEvent } from "@/components/skeletons/SkeletonEvent";
 
 interface EventsPageState extends ComponentState {
   events: Array<IPage<IEvent>>,
@@ -61,18 +60,18 @@ function Events() {
         <p className="mt-2">New events can be added from Notion</p>
 
         <div className="grid grid-cols-2 mt-6 gap-6">
-          {data.events.map(event => (
-            <Event
-              name={event.properties['Name'].title[0].plain_text}
-              date={getDateRange(event.properties['Event Date'].date, 'DD/MM/YYYY')}
-              location={event.properties['Location'].rich_text.reduce((prev, curr) => `${prev} ${curr.plain_text}`, '')}
-              type={event.properties['Type'].select.name}
-              orderCount={30}
-              packedCount={5}
-              paidCount={9}
-              pendingCount={16}
-              key={event.id} />
-          ))}
+          {data.loading ? (
+            <SkeletonEvent count={6} />
+          ) : (
+            <>
+              {data.events.map(eventPage => (
+                <Event
+                  notionPageID={eventPage.id}
+                  event={eventPage.properties}
+                  key={eventPage.id} />
+              ))}
+            </>
+          )}
         </div>
       </div>
     </Container>
