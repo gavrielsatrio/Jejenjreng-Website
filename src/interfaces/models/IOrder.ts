@@ -1,6 +1,7 @@
 import { IPurchasedProduct } from "./IPurchasedProduct";
 
 export interface IOrder {
+  rowNo: number;
   name: string;
   timestamp: string;
   status: string;

@@ -1,5 +1,5 @@
 import { IPage } from "@/interfaces/notions/IPage";
-import { IEvent } from "@/interfaces/models/IEvent";
+import { IEvent } from "@/interfaces/notions/IEvent";
 
 function useNotion() {
   const getUpcomingEvents = async () => {

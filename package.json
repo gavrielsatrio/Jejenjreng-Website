@@ -10,6 +10,8 @@
   },
   "dependencies": {
     "@notionhq/client": "^2.3.0",
+    "@reduxjs/toolkit": "^2.6.1",
+    "classnames": "^2.5.1",
     "dayjs": "^1.11.13",
     "google-auth-library": "^9.15.1",
     "google-spreadsheet": "^4.1.4",
@@ -17,6 +19,7 @@
     "numeral": "^2.0.6",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-redux": "^9.2.0",
     "slug": "^10.0.0"
   },
   "devDependencies": {

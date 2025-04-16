@@ -1,19 +1,31 @@
 import { Box } from "./Box"
 import { Map } from "./Map"
-import { Calendar } from "./Calendar"
-import { ChevronLeft } from "./ChevronLeft"
-import { Envelope } from "./Envelope"
+import { Close } from "./Close"
+import { Check } from "./Check"
 import { Truck } from "./Truck"
 import { Phone } from "./Phone"
+import { Filter } from "./Filter"
+import { Search } from "./Search"
+import { SortAZ } from "./SortAZ"
+import { SortZA } from "./SortZA"
 import { Receipt } from "./Receipt"
+import { Calendar } from "./Calendar"
+import { Envelope } from "./Envelope"
+import { ChevronLeft } from "./ChevronLeft"
 
 export {
   Box,
   Map,
-  Calendar,
-  ChevronLeft,
-  Envelope,
+  Close,
+  Check,
   Truck,
   Phone,
-  Receipt
+  Filter,
+  Search,
+  SortAZ,
+  SortZA,
+  Receipt,
+  Calendar,
+  Envelope,
+  ChevronLeft,
 }

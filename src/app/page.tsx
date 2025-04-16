@@ -2,49 +2,30 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useNotion } from "@/hooks/useNotion";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import { useAppDispatch } from "@/hooks/useAppDispatch";
+import { useAppSelector } from "@/hooks/useAppSelector";
 
-import { IPage } from "@/interfaces/notions/IPage";
-import { IEvent } from "@/interfaces/models/IEvent";
+import { fetchPastEvents } from "@/slices/past-events";
+import { fetchUpcomingEvents } from "@/slices/upcoming-events";
+import { getPastEvents, getIsLoading as getPastEventsIsLoading } from "@/slices/past-events/selector";
+import { getUpcomingEvents, getIsLoading as getUpcomingEventsIsLoading } from "@/slices/upcoming-events/selector";
 
 import { Event } from "@/components/cards/Event";
 import { Container } from "@/components/Container";
 import { SkeletonEvent } from "@/components/skeletons/SkeletonEvent";
-import { ComponentState } from "@/states/ComponentState";
-
-interface AppPageState extends ComponentState {
-  upcomingEvents: Array<IPage<IEvent>>,
-  pastEvents: Array<IPage<IEvent>>
-}
 
 function App() {
-  const { getUpcomingEvents, getPastEvents } = useNotion();
+  const dispatch = useAppDispatch();
 
-  const [data, setData] = useState<AppPageState>({
-    loading: true,
-    upcomingEvents: [],
-    pastEvents: []
-  });
-
-  const fetchEvents = async () => {
-    setData(prev => ({
-      ...prev,
-      loading: true
-    }));
-
-    const [upcomingEvents, pastEvents] = await Promise.all([await getUpcomingEvents(), await getPastEvents()]);
-
-    setData(prev => ({
-      ...prev,
-      loading: false,
-      upcomingEvents,
-      pastEvents
-    }));
-  }
+  const isUpcomingEventsLoading = useAppSelector(getUpcomingEventsIsLoading);
+  const isPastEventsLoading = useAppSelector(getPastEventsIsLoading);
+  const upcomingEvents = useAppSelector(getUpcomingEvents);
+  const pastEvents = useAppSelector(getPastEvents);
 
   useEffect(() => {
-    fetchEvents();
+    dispatch(fetchUpcomingEvents());
+    dispatch(fetchPastEvents());
   }, []);
 
   return (
@@ -62,15 +43,14 @@ function App() {
           <Link href="/events" className="underline">Manage all events</Link>
         </div>
         <div className="flex flex-col gap-y-6">
-          {data.loading ? (
+          {isUpcomingEventsLoading ? (
             <SkeletonEvent count={2} />
           ) : (
             <>
-              {data.upcomingEvents.map(eventPage => (
+              {upcomingEvents.map(event => (
                 <Event
-                  notionPageID={eventPage.id}
-                  event={eventPage.properties}
-                  key={eventPage.id} />
+                  event={event}
+                  key={event.notionPageID} />
               ))}
             </>
           )}
@@ -80,15 +60,14 @@ function App() {
           <h2 className="font-bold text-3xl">Past Events</h2>
         </div>
         <div className="flex flex-col gap-y-6 mb-16">
-          {data.loading ? (
+          {isPastEventsLoading ? (
             <SkeletonEvent count={3} />
           ) : (
             <>
-              {data.pastEvents.map(eventPage => (
+              {pastEvents.map(event => (
                 <Event
-                  notionPageID={eventPage.id}
-                  event={eventPage.properties}
-                  key={eventPage.id} />
+                  event={event}
+                  key={event.notionPageID} />
               ))}
             </>
           )}

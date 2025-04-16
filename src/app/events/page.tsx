@@ -1,52 +1,31 @@
 'use client';
 
+import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useNotion } from "@/hooks/useNotion";
-import { useEffect, useState } from "react";
+import { useAppSelector } from "@/hooks/useAppSelector";
+import { useAppDispatch } from "@/hooks/useAppDispatch";
 
-import { IPage } from "@/interfaces/notions/IPage";
-import { IEvent } from "@/interfaces/models/IEvent";
+import { fetchEvents } from "@/slices/events";
+import { getEvents, getIsLoading } from "@/slices/events/selector";
 
 import { Event } from "@/components/cards/Event";
 import { Container } from "@/components/Container";
 import { ChevronLeft } from "@/icons/ChevronLeft";
-import { ComponentState } from "@/states/ComponentState";
 import { SkeletonEvent } from "@/components/skeletons/SkeletonEvent";
-
-interface EventsPageState extends ComponentState {
-  events: Array<IPage<IEvent>>,
-}
 
 function Events() {
   const router = useRouter();
-  const { getAllEvents } = useNotion();
+  const dispatch = useAppDispatch();
 
-  const [data, setData] = useState<EventsPageState>({
-    loading: true,
-    events: []
-  });
-
-  const fetchEvents = async () => {
-    setData(prev => ({
-      ...prev,
-      loading: true
-    }));
-
-    const events = await getAllEvents();
-
-    setData(prev => ({
-      ...prev,
-      loading: false,
-      events
-    }));
-  }
+  const isLoading = useAppSelector(getIsLoading);
+  const events = useAppSelector(getEvents);
 
   const handleBack = () => {
     router.back();
   }
 
   useEffect(() => {
-    fetchEvents();
+    dispatch(fetchEvents());
   }, []);
 
   return (
@@ -60,15 +39,14 @@ function Events() {
         <p className="mt-2">New events can be added from Notion</p>
 
         <div className="grid grid-cols-2 mt-6 gap-6">
-          {data.loading ? (
+          {isLoading ? (
             <SkeletonEvent count={6} />
           ) : (
             <>
-              {data.events.map(eventPage => (
+              {events.map(event => (
                 <Event
-                  notionPageID={eventPage.id}
-                  event={eventPage.properties}
-                  key={eventPage.id} />
+                  event={event}
+                  key={event.notionPageID} />
               ))}
             </>
           )}
