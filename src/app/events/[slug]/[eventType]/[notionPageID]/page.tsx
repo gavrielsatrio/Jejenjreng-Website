@@ -4,7 +4,7 @@ import classNames from "classnames";
 import { useAppDispatch } from "@/hooks/useAppDispatch";
 import { useAppSelector } from "@/hooks/useAppSelector";
 import { useEffect, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation"
+import { useParams, useRouter } from "next/navigation"
 
 import { IOrder } from "@/interfaces/models/IOrder";
 
@@ -14,8 +14,8 @@ import { getOrders, getIsLoading as getOrderIsLoading } from "@/slices/orders/se
 import { getEvent, getSpreadsheetID, getIsLoading as getEventIsLoading } from "@/slices/event/selector";
 
 import { Badge } from "@/components/Badge"
-import { Modal } from "@/components/Modal";
 import { Order } from "@/components/cards/Order";
+import { Modal } from "@/components/Modal";
 import { Skeleton } from "@/components/skeletons/Skeleton";
 import { Container } from "@/components/Container"
 import { OrderStatus } from "@/enums/OrderStatus";
@@ -31,11 +31,10 @@ interface EventDetailFilterAndSortState {
   };
 }
 
-function Event() {
+function EventPage() {
   const router = useRouter();
   const dispatch = useAppDispatch();
-  const searchParams = useSearchParams();
-  const notionPageID = searchParams.get('pageID');
+  const { notionPageID } = useParams();
 
   const isEventLoading = useAppSelector(getEventIsLoading);
   const isOrderLoading = useAppSelector(getOrderIsLoading);
@@ -180,7 +179,7 @@ function Event() {
   }, []);
 
   useEffect(() => {
-    if(isEventLoading || !eventSpreadsheetID) {
+    if (isEventLoading || !eventSpreadsheetID) {
       return;
     }
 
@@ -234,9 +233,7 @@ function Event() {
               {orders.map(order => (
                 <Order
                   key={order.timestamp}
-                  order={order}
-                  eventType={event.type}
-                  spreadsheetLink={event.spreadsheetLink} />
+                  order={order} />
               ))}
             </>
           )}
@@ -315,4 +312,4 @@ function Event() {
   )
 }
 
-export default Event;
+export default EventPage;

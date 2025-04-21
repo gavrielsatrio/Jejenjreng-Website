@@ -19,14 +19,9 @@ interface UpdateOrderStatusProps {
   status: string;
 }
 
-interface UpdateOrderStatusReturns {
-  rowNo: number;
-  status: string;
-}
-
 const initialState: InitialState = {
   orders: [],
-  isLoading: false,
+  isLoading: true,
   isError: false,
 };
 
@@ -50,6 +45,7 @@ export const orders = createSlice({
     })
     .addCase(fetchOrders.rejected, (prevState) => ({
       ...prevState,
+      isLoading: false,
       isError: true
     }));
 
@@ -58,7 +54,7 @@ export const orders = createSlice({
       ...prevState
     }))
     .addCase(updateOrderStatus.fulfilled, (prevState, action) => {
-      const updatedOrderIndex = prevState.orders.findIndex(order => order.rowNo === action.payload.rowNo);
+      const updatedOrderIndex = prevState.orders.findIndex(order => order.rowNo === action.meta.arg.rowNo);
 
       return {
         ...prevState,
@@ -66,7 +62,7 @@ export const orders = createSlice({
           ...prevState.orders.slice(0, updatedOrderIndex),
           {
             ...prevState.orders[updatedOrderIndex],
-            status: action.payload.status
+            status: action.meta.arg.status
           },
           ...prevState.orders.slice(updatedOrderIndex + 1)
         ]
@@ -86,7 +82,7 @@ export const fetchOrders = createAsyncThunk<Array<IOrder>, FetchOrdersProps>('or
   return response;
 })
 
-export const updateOrderStatus = createAsyncThunk<UpdateOrderStatusReturns, UpdateOrderStatusProps>('orders/updateStatus', async ({ spreadsheetID, rowNo, status }, { rejectWithValue }) => {
+export const updateOrderStatus = createAsyncThunk<void, UpdateOrderStatusProps>('orders/updateStatus', async ({ spreadsheetID, rowNo, status }, { rejectWithValue }) => {
   try {
     const request = await fetch(`/api/orders/${spreadsheetID}`, {
       method: 'POST',
@@ -99,8 +95,7 @@ export const updateOrderStatus = createAsyncThunk<UpdateOrderStatusReturns, Upda
       })
     });
 
-    const response = await request.json() as UpdateOrderStatusReturns;
-    return response;
+    await request.json();
   } catch {
     return rejectWithValue('Failed');
   }

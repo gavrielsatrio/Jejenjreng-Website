@@ -1,4 +1,3 @@
-import { EventType } from "@/types/EventType";
 import { IDate, IRichText, ISelect } from "./property-types";
 
 export interface IEvent {
@@ -10,7 +9,7 @@ export interface IEvent {
   "Type": {
     id: string;
     type: string;
-    select: ISelect<EventType>
+    select: ISelect<string>
   };
   "Link Spreadsheet": {
     id: string;

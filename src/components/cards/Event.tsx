@@ -14,7 +14,7 @@ interface EventProps extends React.HTMLAttributes<HTMLDivElement> {
 
 function Event({ event, className = '' }: EventProps) {
   return (
-    <Link href={`/events/${slug(`${event.name} ${event.type}`)}?pageID=${event.notionPageID}`} className={`border border-[#C8C8C8] rounded-lg shadow-sm bg-white p-6 flex items-center gap-x-6 ${className}`}>
+    <Link href={`/events/${slug(event.name)}/${slug(event.type)}/${event.notionPageID}`} className={`border border-[#C8C8C8] rounded-lg shadow-sm bg-white p-6 flex items-center gap-x-6 ${className}`}>
       {event.type === 'Pickup' ? (
         <Box className="p-4 size-14 fill-red-500/80 box-border rounded-full bg-red-500/10 flex-none" />
       ) : (

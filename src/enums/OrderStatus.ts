@@ -1,5 +1,5 @@
 export enum OrderStatus {
-  PAID = 'Paid',
   PACKED = 'Packed',
+  PAID = 'Paid',
   PENDING = 'Pending'
 }

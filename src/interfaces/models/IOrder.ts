@@ -2,7 +2,7 @@ import { IPurchasedProduct } from "./IPurchasedProduct";
 
 export interface IOrder {
   rowNo: number;
-  name: string;
+  customer: string;
   timestamp: string;
   status: string;
   email: string;

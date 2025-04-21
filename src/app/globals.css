@@ -1,1 +1,7 @@
+@import url('https://fonts.googleapis.com/css2?family=Hammersmith+One&family=Shrikhand&display=swap');
 @import "tailwindcss";
+
+@theme {
+  --font-shrikhand: 'Shrikhand', sans-serif;
+  --font-hammersmith-one: 'Hammersmith One', sans-serif;
+}

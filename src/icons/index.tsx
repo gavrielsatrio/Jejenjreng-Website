@@ -2,6 +2,7 @@ import { Box } from "./Box"
 import { Map } from "./Map"
 import { Close } from "./Close"
 import { Check } from "./Check"
+import { Loader } from "./Loader"
 import { Truck } from "./Truck"
 import { Phone } from "./Phone"
 import { Filter } from "./Filter"
@@ -18,6 +19,7 @@ export {
   Map,
   Close,
   Check,
+  Loader,
   Truck,
   Phone,
   Filter,

@@ -15,7 +15,7 @@ import { Event } from "@/components/cards/Event";
 import { Container } from "@/components/Container";
 import { SkeletonEvent } from "@/components/skeletons/SkeletonEvent";
 
-function App() {
+function AppPage() {
   const dispatch = useAppDispatch();
 
   const isUpcomingEventsLoading = useAppSelector(getUpcomingEventsIsLoading);
@@ -77,4 +77,4 @@ function App() {
   )
 }
 
-export default App;
+export default AppPage;

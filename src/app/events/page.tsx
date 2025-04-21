@@ -13,7 +13,7 @@ import { Container } from "@/components/Container";
 import { ChevronLeft } from "@/icons/ChevronLeft";
 import { SkeletonEvent } from "@/components/skeletons/SkeletonEvent";
 
-function Events() {
+function EventsPage() {
   const router = useRouter();
   const dispatch = useAppDispatch();
 
@@ -56,4 +56,4 @@ function Events() {
   )
 }
 
-export default Events;
+export default EventsPage;

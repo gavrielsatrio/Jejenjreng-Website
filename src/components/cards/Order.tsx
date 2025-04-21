@@ -2,24 +2,31 @@ import classNames from "classnames"
 
 import { useState } from "react"
 import { useAppDispatch } from "@/hooks/useAppDispatch"
+import { useAppSelector } from "@/hooks/useAppSelector"
+
 import { updateOrderStatus } from "@/slices/orders"
-import { extractSpreadsheetID } from "@/utils/spreadsheets/ID"
+import { getEvent, getSpreadsheetID } from "@/slices/event/selector"
 
 import { IOrder } from "@/interfaces/models/IOrder"
 
 import { Badge } from "@/components/Badge"
+import { Invoice } from "@/components/Invoice"
 import { EventType } from "@/enums/EventType"
 import { OrderStatus } from "@/enums/OrderStatus"
 import { Close, Envelope, Map, Phone, Receipt, Truck } from "@/icons"
 
 interface OrderProps {
   order: IOrder;
-  eventType: string;
-  spreadsheetLink: string;
 }
 
-function Order({ order, eventType, spreadsheetLink }: OrderProps) {
+function Order({ order }: OrderProps) {
   const dispatch = useAppDispatch();
+
+  const event = useAppSelector(getEvent);
+  const eventSpreadsheetID = useAppSelector(getSpreadsheetID);
+
+  const [isLoading, setIsLoading] = useState(false);
+  const [isInvoiceOpen, setIsInvoiceOpen] = useState(false);
   const [isStatusModalVisible, setIsStatusModalVisible] = useState(false);
 
   const toggleStatusModal = () => {
@@ -28,20 +35,30 @@ function Order({ order, eventType, spreadsheetLink }: OrderProps) {
 
   const handleUpdateStatus = async (status: string) => {
     toggleStatusModal();
+    setIsLoading(true);
 
-    const spreadsheetID = extractSpreadsheetID(spreadsheetLink);
     await dispatch(updateOrderStatus({
-      spreadsheetID: spreadsheetID,
+      spreadsheetID: eventSpreadsheetID,
       rowNo: order.rowNo,
       status
     }));
+
+    setIsLoading(false);
+  }
+
+  const handleOpenInvoice = () => {
+    setIsInvoiceOpen(true);
+  }
+
+  const handleOpenShippingInfo = () => {
+
   }
 
   return (
-    <div className={`border border-[#C8C8C8] rounded-lg shadow-sm bg-white p-6 flex flex-col gap-x-6`}>
+    <div className={`border border-[#C8C8C8] rounded-lg shadow-sm bg-white p-6 flex flex-col gap-x-6 relative overflow-hidden`}>
       <div className="relative flex justify-between">
         <div>
-          <h3 className="font-bold text-lg">{order.name}</h3>
+          <h3 className="font-bold text-lg">{order.customer}</h3>
           <p className="text-sm text-black/40">placed order at {order.timestamp}</p>
 
           <div className="flex items-center gap-x-2 mt-4">
@@ -57,12 +74,14 @@ function Order({ order, eventType, spreadsheetLink }: OrderProps) {
             <p className="text-black/60 text-sm">{order.address}</p>
           </div>
         </div>
+
         <Badge
           onClick={toggleStatusModal}
+          loading={isLoading}
           className={classNames('font-semibold italic self-start flex-none cursor-pointer', {
-            'bg-amber-500/20 text-amber-500 hover:bg-amber-600/20 hover:text-amber-600': order.status === OrderStatus.PENDING,
-            'bg-teal-500/20 text-teal-500 hover:bg-teal-600/20 hover:text-teal-600': order.status === OrderStatus.PAID,
-            'bg-rose-500/20 text-rose-500 hover:bg-rose-600/20 hover:text-rose-600': order.status === OrderStatus.PACKED
+            'bg-red-500/20 text-red-500 fill-red-500 hover:bg-red-600/20 hover:text-red-600 hover:fill-red-600': order.status === OrderStatus.PENDING,
+            'bg-blue-500/20 text-blue-500 fill-blue-500 hover:bg-blue-600/20 hover:text-blue-600 hover:fill-blue-600': order.status === OrderStatus.PAID,
+            'bg-emerald-500/20 text-emerald-500 fill-emerald-500 hover:bg-emerald-600/20 hover:text-emerald-600 hover:fill-emerald-600': order.status === OrderStatus.PACKED
           })}
         >
           {order.status}
@@ -77,9 +96,9 @@ function Order({ order, eventType, spreadsheetLink }: OrderProps) {
                   key={index}
                   onClick={() => handleUpdateStatus(status)}
                   className={classNames('font-semibold italic self-start flex-none cursor-pointer', {
-                    'bg-amber-500/20 text-amber-500 hover:bg-amber-600/20 hover:text-amber-600': status === OrderStatus.PENDING,
-                    'bg-teal-500/20 text-teal-500 hover:bg-teal-600/20 hover:text-teal-600': status === OrderStatus.PAID,
-                    'bg-rose-500/20 text-rose-500 hover:bg-rose-600/20 hover:text-rose-600': status === OrderStatus.PACKED
+                    'bg-red-500/20 text-red-500 hover:bg-red-600/20 hover:text-red-600': status === OrderStatus.PENDING,
+                    'bg-blue-500/20 text-blue-500 hover:bg-blue-600/20 hover:text-blue-600': status === OrderStatus.PAID,
+                    'bg-emerald-500/20 text-emerald-500 hover:bg-emerald-600/20 hover:text-emerald-600': status === OrderStatus.PACKED
                   })}
                 >
                   {status}
@@ -92,20 +111,24 @@ function Order({ order, eventType, spreadsheetLink }: OrderProps) {
         )}
       </div>
       <div className="flex items-center justify-between mt-6">
-        <Badge className="bg-blue-500/20 text-blue-500 font-semibold">{order.purchasedProducts.reduce((prev, curr) => (prev + curr.qty), 0)} items</Badge>
+        <Badge className="bg-orange-500/20 text-orange-500 font-semibold">{order.purchasedProducts.reduce((prev, curr) => (prev + curr.qty), 0)} items</Badge>
         <div className="flex items-center gap-x-2">
-          {eventType === EventType.MAIL_ORDER && (
-            <button className="flex items-center gap-x-2 px-4 py-2 text-sm font-bold bg-blue-500 hover:bg-blue-600 rounded-full text-white cursor-pointer">
+          {event.type === EventType.MAIL_ORDER && (
+            <button className="flex items-center gap-x-2 px-4 py-2 text-sm font-bold bg-indigo-500 hover:bg-indigo-600 rounded-full text-white cursor-pointer" onClick={handleOpenShippingInfo}>
               <Truck className="fill-white size-5" />
               <span>Shipping Info</span>
             </button>
           )}
-          <button className="flex items-center gap-x-2 px-4 py-2 text-sm font-bold bg-emerald-500 hover:bg-emerald-600 rounded-full text-white cursor-pointer">
+          <button className="flex items-center gap-x-2 px-4 py-2 text-sm font-bold bg-emerald-500 hover:bg-emerald-600 rounded-full text-white cursor-pointer" onClick={handleOpenInvoice}>
             <Receipt className="fill-white size-5" />
             <span>Invoice</span>
           </button>
         </div>
       </div>
+
+      {isInvoiceOpen && (
+        <Invoice className="top-full left-0 z-10" eventName={`${event.name} ${event.type}`} orderNumber={order.rowNo - 1} purchasedProducts={order.purchasedProducts} recipient={order.customer} onFinishGenerated={() => setIsInvoiceOpen(false)} key={order.timestamp} />
+      )}
     </div>
   )
 }

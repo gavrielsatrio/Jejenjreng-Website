@@ -1,1 +1,0 @@
-export type EventType = 'Pickup' | 'Mail Order';
