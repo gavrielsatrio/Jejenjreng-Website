@@ -2,8 +2,10 @@ import dayjs from "dayjs";
 import Image from "next/image"
 import numeral from "numeral"
 import html2canvas from "html2canvas";
+import { useAppSelector } from "@/hooks/useAppSelector";
 import { Fragment, useEffect, useRef } from "react"
 
+import { getProducts } from "@/slices/products/selector";
 import { IPurchasedProduct } from "@/interfaces/models/IPurchasedProduct";
 
 interface InvoiceProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -14,18 +16,21 @@ interface InvoiceProps extends React.HTMLAttributes<HTMLDivElement> {
   onFinishGenerated?: () => void;
 }
 
-function Invoice({ 
-  eventName, 
-  recipient, 
-  orderNumber, 
-  purchasedProducts, 
+function Invoice({
+  eventName,
+  recipient,
+  orderNumber,
+  purchasedProducts,
   className,
-  onFinishGenerated = () => {}
+  onFinishGenerated = () => { }
 }: InvoiceProps) {
   const invoiceRef = useRef(null);
+  const products = useAppSelector(getProducts);
+
+  let totalPrice = 0;
 
   const saveInvoice = async () => {
-    if(!invoiceRef) {
+    if (!invoiceRef) {
       return;
     }
 
@@ -49,7 +54,7 @@ function Invoice({
 
   return (
     <div className={`absolute w-2xl bg-[#30373d] px-6 py-10 overflow-hidden ${className}`} ref={invoiceRef}>
-      <Image width={2048} height={1454} alt="Fox Image" src="/assets/fox-transparent.png" className="absolute bottom-4 -left-16 z-10 h-72 w-5/8 object-contain object-left" />
+      <Image width={2048} height={1454} alt="Fox Image" src="/assets/fox-transparent.png" className="absolute bottom-4 -left-20 z-10 h-72 w-5/8 object-contain object-left" />
       <Image width={547} height={456} alt="Ornament Image" src="/assets/ornament-transparent.png" className="absolute top-0 right-0 z-0 h-80 translate-x-1/2 -translate-y-1/3" />
       <Image width={547} height={456} alt="Ornament Image" src="/assets/ornament-transparent.png" className="absolute bottom-0 left-0 z-0 h-1/2 -translate-x-1/2 translate-y-8" />
       <Image width={150} height={150} alt="Ornament Image" src="/assets/ornament2-transparent.png" className="absolute top-0 left-0 z-10 size-24" />
@@ -80,17 +85,31 @@ function Invoice({
         </div>
         <hr className="border-[#d2a879] my-2" />
         <div className="grid grid-cols-3 gap-y-4 text-[#27589f] font-hammersmith-one text-xs text-center px-4 py-8 tracking-normal">
-          {purchasedProducts.map((product, index) => (
-            <Fragment key={index}>
-              <div className="col-span-1">{product.name}</div>
-              <div className="col-span-1">{1000} X {product.qty}</div>
-              <div className="col-span-1">{1000}k</div>
-            </Fragment>
-          ))}
+          {purchasedProducts.map((purchasedProduct, index) => {
+            const product = products.find(product => product.name === purchasedProduct.name);
+            let productPrice = 0;
+
+            if (product) {
+              productPrice = product.price;
+            }
+
+            totalPrice += productPrice * purchasedProduct.qty;
+
+            return (
+              <Fragment key={index}>
+                <div className="col-span-1">{purchasedProduct.name}</div>
+                <div className="col-span-1">{productPrice} X {purchasedProduct.qty}</div>
+                <div className="col-span-1">{productPrice * purchasedProduct.qty}k</div>
+              </Fragment>
+            )
+          })}
         </div>
         <hr className="border-[#d2a879] my-2" />
         <div className="py-4 font-shrikhand text-right">
-          <p className="text-[#dd5e57]"><span className="text-[#27589f] me-6">Total:</span> IDR{numeral(purchasedProducts.reduce((prev, curr) => prev + (1000 * curr.qty), 0)).format('0,0').replace(',', '.')},-</p>
+          <p className="text-[#dd5e57]">
+            <span className="text-[#27589f] me-6"> Total:</span>
+            IDR{numeral(totalPrice).format('0,0').replace(',', '.')},-
+          </p>
         </div>
       </div>
 

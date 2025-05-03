@@ -17,8 +17,8 @@ function EventsPage() {
   const router = useRouter();
   const dispatch = useAppDispatch();
 
-  const isLoading = useAppSelector(getIsLoading);
   const events = useAppSelector(getEvents);
+  const isLoading = useAppSelector(getIsLoading);
 
   const handleBack = () => {
     router.back();

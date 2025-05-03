@@ -3,6 +3,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import { event } from "@/slices/event";
 import { orders } from "@/slices/orders";
 import { events } from "@/slices/events";
+import { products } from "@/slices/products";
 import { pastEvents } from "@/slices/past-events";
 import { upcomingEvents } from "@/slices/upcoming-events";
 
@@ -14,6 +15,7 @@ export const makeStore = () => {
       upcomingEvents: upcomingEvents.reducer,
       pastEvents: pastEvents.reducer,
       orders: orders.reducer,
+      products: products.reducer,
     },
   })
 }

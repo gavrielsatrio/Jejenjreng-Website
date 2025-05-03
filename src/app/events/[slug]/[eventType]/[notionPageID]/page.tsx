@@ -1,17 +1,18 @@
 'use client';
 
+import Image from "next/image";
 import classNames from "classnames";
 import { useAppDispatch } from "@/hooks/useAppDispatch";
 import { useAppSelector } from "@/hooks/useAppSelector";
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation"
 
-import { IOrder } from "@/interfaces/models/IOrder";
-
 import { fetchEvent } from "@/slices/event";
-import { fetchOrders } from "@/slices/orders";
-import { getOrders, getIsLoading as getOrderIsLoading } from "@/slices/orders/selector";
+import { fetchProducts } from "@/slices/products";
+import { applyFilterAndSort, fetchOrders } from "@/slices/orders";
+import { getIsLoading as getProductsIsLoading } from "@/slices/products/selector";
 import { getEvent, getSpreadsheetID, getIsLoading as getEventIsLoading } from "@/slices/event/selector";
+import { getOrdersFilters, getIsLoading as getOrderIsLoading, getShownOrders, getOrdersSort } from "@/slices/orders/selector";
 
 import { Badge } from "@/components/Badge"
 import { Order } from "@/components/cards/Order";
@@ -21,6 +22,13 @@ import { Container } from "@/components/Container"
 import { OrderStatus } from "@/enums/OrderStatus";
 import { SkeletonOrder } from "@/components/skeletons/SkeletonOrder";
 import { Calendar, Map, ChevronLeft, Filter, Search, Close, Check, SortAZ, SortZA } from "@/icons"
+
+interface EventDetailRouteParams {
+  slug: string;
+  eventType: string;
+  notionPageID: string;
+  [key: string]: string;
+}
 
 interface EventDetailFilterAndSortState {
   open: boolean;
@@ -34,13 +42,16 @@ interface EventDetailFilterAndSortState {
 function EventPage() {
   const router = useRouter();
   const dispatch = useAppDispatch();
-  const { notionPageID } = useParams();
+  const { notionPageID } = useParams<EventDetailRouteParams>();
 
-  const isEventLoading = useAppSelector(getEventIsLoading);
-  const isOrderLoading = useAppSelector(getOrderIsLoading);
   const event = useAppSelector(getEvent);
   const eventSpreadsheetID = useAppSelector(getSpreadsheetID);
-  const orders = useAppSelector(getOrders);
+  const shownOrders = useAppSelector(getShownOrders);
+  const ordersFilters = useAppSelector(getOrdersFilters);
+  const ordersSort = useAppSelector(getOrdersSort);
+  const isEventLoading = useAppSelector(getEventIsLoading);
+  const isOrderLoading = useAppSelector(getOrderIsLoading);
+  const isProductsLoading = useAppSelector(getProductsIsLoading);
 
   const sortableFields = [
     'Timestamp',
@@ -63,42 +74,17 @@ function EventPage() {
     router.back();
   }
 
-  const sortOrders = (orders: Array<IOrder>, by: string, direction: string) => {
-    orders = orders.sort((a, b) => {
-      const temp = a;
-
-      if (direction === 'descending') {
-        a = b;
-        b = temp;
-      }
-
-      let compareResult = 0;
-      if (by === 'Timestamp') {
-        compareResult = a.timestamp.localeCompare(b.timestamp);
-      } else if (by === 'Name') {
-        compareResult = a.name.localeCompare(b.name);
-      } else if (by === 'Email') {
-        compareResult = a.email.localeCompare(b.email);
-      } else if (by === 'Phone Number') {
-        compareResult = a.phoneNumber.localeCompare(b.phoneNumber);
-      } else if (by === 'Purchased Items') {
-        compareResult = a.purchasedProducts.length - b.purchasedProducts.length
-      }
-
-      return compareResult;
-    });
-
-    return orders;
-  }
-
   const toggleFilter = () => {
     setFilterAndSort(prev => ({
       ...prev,
+      filters: ordersFilters,
+      sort: ordersSort,
       open: !prev.open
     }));
   }
 
   const applyFilter = () => {
+    dispatch(applyFilterAndSort({ filters: filterAndSort.filters, sort: filterAndSort.sort }))
     toggleFilter();
   }
 
@@ -174,12 +160,16 @@ function EventPage() {
 
   useEffect(() => {
     dispatch(fetchEvent({
-      notionPageID: notionPageID!
-    }))
+      notionPageID
+    }));
+
+    dispatch(fetchProducts({
+      notionPageID
+    }));
   }, []);
 
   useEffect(() => {
-    if (isEventLoading || !eventSpreadsheetID) {
+    if (isEventLoading) {
       return;
     }
 
@@ -226,32 +216,37 @@ function EventPage() {
           </div>
         </div>
         <div className="grid grid-cols-2 mt-4 gap-6">
-          {isEventLoading || isOrderLoading ? (
+          {isEventLoading || isOrderLoading || isProductsLoading ? (
             <SkeletonOrder count={6} />
           ) : (
             <>
-              {orders.map(order => (
-                <Order
-                  key={order.timestamp}
-                  order={order} />
-              ))}
+              {shownOrders.length > 0 ? (
+                <>
+                  {shownOrders.map(order => (
+                    <Order
+                      key={order.timestamp}
+                      order={order} />
+                  ))}
+                </>
+              ) : (
+                <div className="col-span-2 flex flex-col items-center justify-center p-8 gap-y-4">
+                  <Image src="/assets/wiwol-confused-transparent.png" width={510} height={489} alt="Empty Order Image" className="w-1/8 object-contain" />
+                  <h4 className="text-black/60 text-center">Oh no!,<br />There are still no orders for this event.</h4>
+                </div>
+              )}
             </>
           )}
         </div>
       </div>
 
       {filterAndSort.open && (
-        <Modal>
+        <Modal onClickOutside={toggleFilter}>
           <div className="bg-white rounded-lg p-6 w-1/2">
             <div className="flex items-center justify-between">
+              <h4 className="font-bold text-xl">Filter and Sort</h4>
               <div className="flex gap-x-2 items-center">
                 <Close className="size-6 fill-black cursor-pointer" onClick={toggleFilter} />
-                <h4 className="font-bold text-xl">Filter and Sort</h4>
               </div>
-              <button className="font-bold text-blue-500 cursor-pointer" onClick={() => {
-                handleStatusFilter('');
-                handleFieldSort('');
-              }}>Reset</button>
             </div>
 
             <hr className="border-black/15 my-4" />
@@ -301,9 +296,15 @@ function EventPage() {
 
             <hr className="border-black/15 my-4" />
 
-            <div className="flex items-center justify-end gap-x-2">
-              <button className="px-8 py-2 rounded-full font-semibold cursor-pointer border border-black/60 text-black/60 hover:bg-black/5" onClick={toggleFilter}>Cancel</button>
-              <button className="px-8 py-2 rounded-full font-semibold cursor-pointer bg-blue-500 hover:bg-blue-600 text-white" onClick={applyFilter}>Apply</button>
+            <div className="flex items-center justify-between">
+              <button className="font-bold text-blue-500 cursor-pointer" onClick={() => {
+                handleStatusFilter('');
+                handleFieldSort('');
+              }}>Reset</button>
+              <div className="flex gap-x-2">
+                <button className="px-8 py-2 rounded-full font-semibold cursor-pointer border border-black/60 text-black/60 hover:bg-black/5" onClick={toggleFilter}>Cancel</button>
+                <button className="px-8 py-2 rounded-full font-semibold cursor-pointer bg-blue-500 hover:bg-blue-600 text-white" onClick={applyFilter}>Apply</button>
+              </div>
             </div>
           </div>
         </Modal>

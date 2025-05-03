@@ -1,11 +1,14 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-
 import { IOrder } from '@/interfaces/models/IOrder'
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
 
-interface InitialState {
-  orders: Array<IOrder>;
-  isLoading: boolean;
-  isError: boolean;
+interface OrderSortProps {
+  by: string;
+  direction: string;
+}
+
+interface OrderFilterAndSortProps {
+  filters: Array<string>;
+  sort: OrderSortProps;
 }
 
 interface FetchOrdersProps {
@@ -19,17 +22,75 @@ interface UpdateOrderStatusProps {
   status: string;
 }
 
+interface InitialState extends OrderFilterAndSortProps {
+  orders: Array<IOrder>;
+  shownOrders: Array<IOrder>;
+  isLoading: boolean;
+  isError: boolean;
+}
+
 const initialState: InitialState = {
   orders: [],
+  shownOrders: [],
+  filters: [],
+  sort: {
+    by: '',
+    direction: ''
+  },
   isLoading: true,
   isError: false,
 };
+
+const sortOrders = (orders: Array<IOrder>, { by, direction }: OrderSortProps) => {
+  orders = orders.sort((a, b) => {
+    const temp = a;
+
+    if (direction === 'descending') {
+      a = b;
+      b = temp;
+    }
+
+    let compareResult = 0;
+    if (by === 'Timestamp') {
+      compareResult = new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime();
+    } else if (by === 'Name') {
+      compareResult = a.customer.localeCompare(b.customer);
+    } else if (by === 'Email') {
+      compareResult = a.email.localeCompare(b.email);
+    } else if (by === 'Phone Number') {
+      compareResult = a.phoneNumber.localeCompare(b.phoneNumber);
+    } else if (by === 'Purchased Items') {
+      compareResult = a.purchasedProducts.length - b.purchasedProducts.length
+    }
+
+    return compareResult;
+  });
+
+  return orders;
+}
 
 export const orders = createSlice({
   name: 'orders',
   initialState,
   reducers: {
-    
+    applyFilterAndSort(state, action: PayloadAction<OrderFilterAndSortProps>) {
+      state.isLoading = true;
+
+      let orders = [...state.orders];
+      if(action.payload.filters.length > 0) {
+        orders = orders.filter(order => action.payload.filters.includes(order.status));
+      }
+
+      if(action.payload.sort.by !== '') {
+        orders = sortOrders(orders, { ...action.payload.sort });
+      }
+
+      state.filters = action.payload.filters;
+      state.sort = action.payload.sort;
+      state.shownOrders = orders;
+      
+      state.isLoading = false;
+    }
   },
   extraReducers: (builder) => {
     builder.addCase(fetchOrders.pending, (prevState) => ({
@@ -40,7 +101,8 @@ export const orders = createSlice({
       return {
         ...prevState,
         isLoading: false,
-        orders: action.payload
+        orders: action.payload,
+        shownOrders: action.payload
       };
     })
     .addCase(fetchOrders.rejected, (prevState) => ({
@@ -76,6 +138,10 @@ export const orders = createSlice({
 })
 
 export const fetchOrders = createAsyncThunk<Array<IOrder>, FetchOrdersProps>('orders/fetchOrders', async ({ spreadsheetID, eventType }) => {
+  if(spreadsheetID === '') {
+    return [];
+  }
+
   const request = await fetch(`/api/orders/${spreadsheetID}?eventType=${eventType}`);
   const response = await request.json();
 
@@ -102,6 +168,6 @@ export const updateOrderStatus = createAsyncThunk<void, UpdateOrderStatusProps>(
 })
 
 // Action creators are generated for each case reducer function
-export const {  } = orders.actions
+export const { applyFilterAndSort } = orders.actions
 
 export default orders.reducer

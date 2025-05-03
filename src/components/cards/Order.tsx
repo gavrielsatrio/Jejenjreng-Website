@@ -13,7 +13,7 @@ import { Badge } from "@/components/Badge"
 import { Invoice } from "@/components/Invoice"
 import { EventType } from "@/enums/EventType"
 import { OrderStatus } from "@/enums/OrderStatus"
-import { Close, Envelope, Map, Phone, Receipt, Truck } from "@/icons"
+import { Close, Envelope, Loader, Map, Phone, Receipt, Truck } from "@/icons"
 
 interface OrderProps {
   order: IOrder;
@@ -25,7 +25,7 @@ function Order({ order }: OrderProps) {
   const event = useAppSelector(getEvent);
   const eventSpreadsheetID = useAppSelector(getSpreadsheetID);
 
-  const [isLoading, setIsLoading] = useState(false);
+  const [isOrderStatusLoading, setIsOrderStatusLoading] = useState(false);
   const [isInvoiceOpen, setIsInvoiceOpen] = useState(false);
   const [isStatusModalVisible, setIsStatusModalVisible] = useState(false);
 
@@ -35,7 +35,7 @@ function Order({ order }: OrderProps) {
 
   const handleUpdateStatus = async (status: string) => {
     toggleStatusModal();
-    setIsLoading(true);
+    setIsOrderStatusLoading(true);
 
     await dispatch(updateOrderStatus({
       spreadsheetID: eventSpreadsheetID,
@@ -43,7 +43,7 @@ function Order({ order }: OrderProps) {
       status
     }));
 
-    setIsLoading(false);
+    setIsOrderStatusLoading(false);
   }
 
   const handleOpenInvoice = () => {
@@ -56,7 +56,7 @@ function Order({ order }: OrderProps) {
 
   return (
     <div className={`border border-[#C8C8C8] rounded-lg shadow-sm bg-white p-6 flex flex-col gap-x-6 relative overflow-hidden`}>
-      <div className="relative flex justify-between">
+      <div className="relative flex justify-between grow">
         <div>
           <h3 className="font-bold text-lg">{order.customer}</h3>
           <p className="text-sm text-black/40">placed order at {order.timestamp}</p>
@@ -77,7 +77,7 @@ function Order({ order }: OrderProps) {
 
         <Badge
           onClick={toggleStatusModal}
-          loading={isLoading}
+          loading={isOrderStatusLoading}
           className={classNames('font-semibold italic self-start flex-none cursor-pointer', {
             'bg-red-500/20 text-red-500 fill-red-500 hover:bg-red-600/20 hover:text-red-600 hover:fill-red-600': order.status === OrderStatus.PENDING,
             'bg-blue-500/20 text-blue-500 fill-blue-500 hover:bg-blue-600/20 hover:text-blue-600 hover:fill-blue-600': order.status === OrderStatus.PAID,
@@ -119,9 +119,15 @@ function Order({ order }: OrderProps) {
               <span>Shipping Info</span>
             </button>
           )}
-          <button className="flex items-center gap-x-2 px-4 py-2 text-sm font-bold bg-emerald-500 hover:bg-emerald-600 rounded-full text-white cursor-pointer" onClick={handleOpenInvoice}>
-            <Receipt className="fill-white size-5" />
-            <span>Invoice</span>
+          <button className="flex items-center gap-x-2 px-4 py-2 text-sm font-bold bg-emerald-500 hover:bg-emerald-600 rounded-full text-white cursor-pointer" onClick={handleOpenInvoice} disabled={isInvoiceOpen}>
+            {isInvoiceOpen ? (
+              <Loader className="size-5 fill-white animate-spin duration-1000" />
+            ) : (
+              <>
+                <Receipt className="fill-white size-5" />
+                <span>Invoice</span>
+              </>
+            )}
           </button>
         </div>
       </div>

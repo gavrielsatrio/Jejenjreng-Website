@@ -1,3 +1,6 @@
+import dayjs from "dayjs";
+import customParseFormat from 'dayjs/plugin/customParseFormat';
+
 import { JWT } from "google-auth-library";
 import { GoogleSpreadsheet } from "google-spreadsheet";
 
@@ -7,6 +10,8 @@ import { IPurchasedProduct } from "@/interfaces/models/IPurchasedProduct";
 import { EventType } from "@/enums/EventType";
 import { OrderStatus } from "@/enums/OrderStatus";
 import { ColumnIndex } from "@/configs/spreadsheets/ColumnIndex";
+
+dayjs.extend(customParseFormat);
 
 interface OrderParams {
   spreadsheetID: string;
@@ -67,7 +72,7 @@ async function getOrder({ spreadsheetID, eventType, rowNo }: OrderParams) {
 
   const order: IOrder = {
     rowNo: row.rowNumber,
-    timestamp: dataObject[dataKeys[ColumnIndex.TIMESTAMP]].split(']')[1],
+    timestamp: dayjs(dataObject[dataKeys[ColumnIndex.TIMESTAMP]].split(']')[1], ['DD/MM/YYYY HH:mm:ss', 'D/M/YYYY HH:mm:ss', 'MM/DD/YYYY HH:mm:ss', 'M/D/YYYY HH:mm:ss']).format('YYYY-MM-DD HH:mm:ss'),
     status: dataObject[dataKeys[ColumnIndex.TIMESTAMP]].split(']')[0].replace('[', ''),
     customer: dataObject[dataKeys[ColumnIndex.NAME]],
     email: dataObject[dataKeys[ColumnIndex.EMAIL]],
@@ -124,7 +129,7 @@ async function getOrders({ spreadsheetID, eventType }: OrderParams) {
 
     return {
       rowNo: row.rowNumber,
-      timestamp: dataObject[dataKeys[ColumnIndex.TIMESTAMP]].split(']')[1],
+      timestamp: dayjs(dataObject[dataKeys[ColumnIndex.TIMESTAMP]].split(']')[1], ['DD/MM/YYYY HH:mm:ss', 'D/M/YYYY HH:mm:ss', 'MM/DD/YYYY HH:mm:ss', 'M/D/YYYY HH:mm:ss']).format('YYYY-MM-DD HH:mm:ss'),
       status: dataObject[dataKeys[ColumnIndex.TIMESTAMP]].split(']')[0].replace('[', ''),
       customer: dataObject[dataKeys[ColumnIndex.NAME]],
       email: dataObject[dataKeys[ColumnIndex.EMAIL]],
