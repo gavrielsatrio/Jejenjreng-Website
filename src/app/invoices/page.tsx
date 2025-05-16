@@ -20,7 +20,7 @@ function InvoicePage() {
   ]
 
   return (
-    <Invoice eventName={`Test`} orderNumber={1} purchasedProducts={purchasedProducts} recipient={'Test'}/>
+    <Invoice eventName={`Jejenjreng's CFXX Pickup Inv.`} orderNumber={1} purchasedProducts={purchasedProducts} recipient={'Test'}/>
   )
 }
 

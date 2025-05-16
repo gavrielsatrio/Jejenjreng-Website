@@ -117,6 +117,7 @@ export const orders = createSlice({
     }))
     .addCase(updateOrderStatus.fulfilled, (prevState, action) => {
       const updatedOrderIndex = prevState.orders.findIndex(order => order.rowNo === action.meta.arg.rowNo);
+      const updatedShownOrderIndex = prevState.shownOrders.findIndex(order => order.rowNo === action.meta.arg.rowNo);
 
       return {
         ...prevState,
@@ -127,6 +128,14 @@ export const orders = createSlice({
             status: action.meta.arg.status
           },
           ...prevState.orders.slice(updatedOrderIndex + 1)
+        ],
+        shownOrders: [
+          ...prevState.shownOrders.slice(0, updatedShownOrderIndex),
+          {
+            ...prevState.shownOrders[updatedShownOrderIndex],
+            status: action.meta.arg.status
+          },
+          ...prevState.shownOrders.slice(updatedShownOrderIndex + 1)
         ]
       }
     })

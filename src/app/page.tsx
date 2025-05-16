@@ -30,8 +30,6 @@ function AppPage() {
 
   return (
     <Container className="bg-[#FAFAFA] min-h-dvh px-16 pt-16">
-      <title>Jejenjreng Website</title>
-
       <div className="col-span-4 max-h-[calc(100vh-64px)] overflow-y-hidden">
         <h1 className="font-black text-5xl">Jejenjreng</h1>
         <p className="mt-4 text-black/60">Sampaikanlah dariku, walau hanya satu ayat</p>
