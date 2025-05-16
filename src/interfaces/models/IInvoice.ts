@@ -1,8 +1,8 @@
-import { IProduct } from "./IPurchasedProduct";
+import { IPurchasedProduct } from "./IPurchasedProduct";
 
 export interface IInvoice {
   number: number;
   recipient: string;
   date: Date;
-  purchasedProducts: Array<IProduct>
+  purchasedProducts: Array<IPurchasedProduct>
 }
