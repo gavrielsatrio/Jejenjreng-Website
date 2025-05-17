@@ -89,7 +89,7 @@ function Invoice({
         </div>
         <hr className="border-secondary-dark my-2" />
         <div className="flex items-center justify-between py-8 px-4 font-hammersmith-one text-xs uppercase">
-          <div className="flex flex-col max-w-1/2">
+          <div className="flex flex-col gap-y-2 max-w-1/2">
             <p className="text-primary-light">INVOICE TO</p>
             <p className="text-primary">{recipient}</p>
             <p className="text-primary-light">NO.{orderNumber}</p>
