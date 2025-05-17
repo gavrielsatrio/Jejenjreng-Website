@@ -39,6 +39,7 @@ function Event({ event, className = '' }: EventProps) {
           <Badge className="bg-orange-500/20 text-orange-500">{event.orders.length} orders</Badge>
           <Badge className="bg-emerald-500/20 text-emerald-500">{event.orders.filter(order => order.status === OrderStatus.PACKED).length} packed</Badge>
           <Badge className="bg-blue-500/20 text-blue-500">{event.orders.filter(order => order.status === OrderStatus.PAID).length} paid</Badge>
+          <Badge className="bg-slate-500/20 text-slate-500">{event.orders.filter(order => order.status === OrderStatus.INVOICE_SENT).length} invoice sent</Badge>
           <Badge className="bg-red-500/20 text-red-500">{event.orders.filter(order => order.status === OrderStatus.PENDING).length} pending</Badge>
         </div>
       </div>

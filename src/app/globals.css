@@ -13,9 +13,3 @@
   --color-secondary-lighter: #FDF6F4;
   --color-tertiary: #CBF000;
 }
-
-@layer base {
-  img {
-    @apply inline-block;
-  }
-}

@@ -81,7 +81,8 @@ function Order({ order }: OrderProps) {
           className={classNames('font-semibold italic self-start flex-none cursor-pointer', {
             'bg-red-500/20 text-red-500 fill-red-500 hover:bg-red-600/20 hover:text-red-600 hover:fill-red-600': order.status === OrderStatus.PENDING,
             'bg-blue-500/20 text-blue-500 fill-blue-500 hover:bg-blue-600/20 hover:text-blue-600 hover:fill-blue-600': order.status === OrderStatus.PAID,
-            'bg-emerald-500/20 text-emerald-500 fill-emerald-500 hover:bg-emerald-600/20 hover:text-emerald-600 hover:fill-emerald-600': order.status === OrderStatus.PACKED
+            'bg-emerald-500/20 text-emerald-500 fill-emerald-500 hover:bg-emerald-600/20 hover:text-emerald-600 hover:fill-emerald-600': order.status === OrderStatus.PACKED,
+            'bg-slate-500/20 text-slate-500 fill-slate-500 hover:bg-slate-600/20 hover:text-slate-600 hover:fill-emerald-600': order.status === OrderStatus.INVOICE_SENT,
           })}
         >
           {order.status}
@@ -98,7 +99,8 @@ function Order({ order }: OrderProps) {
                   className={classNames('font-semibold italic self-start flex-none cursor-pointer', {
                     'bg-red-500/20 text-red-500 hover:bg-red-600/20 hover:text-red-600': status === OrderStatus.PENDING,
                     'bg-blue-500/20 text-blue-500 hover:bg-blue-600/20 hover:text-blue-600': status === OrderStatus.PAID,
-                    'bg-emerald-500/20 text-emerald-500 hover:bg-emerald-600/20 hover:text-emerald-600': status === OrderStatus.PACKED
+                    'bg-emerald-500/20 text-emerald-500 hover:bg-emerald-600/20 hover:text-emerald-600': status === OrderStatus.PACKED,
+                    'bg-slate-500/20 text-slate-500 hover:bg-slate-600/20 hover:text-slate-600': status === OrderStatus.INVOICE_SENT,
                   })}
                 >
                   {status}
