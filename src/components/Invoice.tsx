@@ -70,7 +70,7 @@ function Invoice({
   return (
     <div className={`absolute w-2xl bg-primary px-6 py-10 overflow-hidden ${className}`} ref={invoiceRef}>
       {/* <img src="/assets/fox-transparent.png" loading="lazy" alt="Fox Image" className="absolute bottom-4 -left-20 z-10 h-72 w-5/8 object-contain object-left"/> */}
-      <img src="/assets/jeje2.png" loading="lazy" alt="Fox Image" className="absolute bottom-4 -left-5 z-10 w-1/2 object-contain object-right"/>
+      <img src="/assets/jeje2.png" loading="lazy" alt="Fox Image" className="absolute -bottom-16 -left-8 z-10 w-1/2 object-contain object-right"/>
       <img src="/assets/ornament-transparent.png" loading="lazy" alt="Ornament Image" className="absolute top-0 right-0 z-0 h-80 translate-x-1/2 -translate-y-1/3"/>
       <img src="/assets/ornament-transparent.png" loading="lazy" alt="Ornament Image" className="absolute bottom-0 left-0 z-0 h-[30rem] -translate-x-1/2 translate-y-8"/>
       <img src="/assets/ornament2-transparent.png" loading="lazy" alt="Ornament Image" className="absolute top-0 left-0 z-10 size-24"/>
@@ -138,7 +138,7 @@ function Invoice({
         <h3 className="text-5xl font-shrikhand w-fit text-secondary-lighter tracking-widest leading-10" style={{
           lineHeight: '40px'
         }}>Terima<br />Kasih!</h3>
-        <div className="w-3/4 rounded-s-3xl bg-secondary-lighter -mx-18 mt-8 py-6 ps-8 tracking-wide">
+        <div className="w-3/4 rounded-s-3xl bg-secondary-lighter -mx-18 mt-8 py-6 ps-10 tracking-wide">
           <h4 className="text-primary font-shrikhand">Payment details</h4>
           <div className="grid grid-cols-2 gap-2 text-primary-light font-hammersmith-one text-xs mt-2">
             <p className="col-span-1">Bank Name: <br />BCA a.n. Hisana</p>
