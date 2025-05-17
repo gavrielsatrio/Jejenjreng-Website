@@ -28,9 +28,14 @@ function Order({ order }: OrderProps) {
   const [isOrderStatusLoading, setIsOrderStatusLoading] = useState(false);
   const [isInvoiceOpen, setIsInvoiceOpen] = useState(false);
   const [isStatusModalVisible, setIsStatusModalVisible] = useState(false);
+  const [isPurchasedProductsVisible, setIsPurchasedProductsVisible] = useState(false);
 
   const toggleStatusModal = () => {
     setIsStatusModalVisible(prev => !prev);
+  }
+
+  const togglePurchasedProducts = () => {
+    setIsPurchasedProductsVisible(prev => !prev);
   }
 
   const handleUpdateStatus = async (status: string) => {
@@ -55,8 +60,8 @@ function Order({ order }: OrderProps) {
   }
 
   return (
-    <div className={`rounded-lg shadow-md bg-secondary-lighter p-5 md:p-6 flex flex-col gap-x-6 relative overflow-hidden`}>
-      <div className="relative flex gap-x-2 justify-between grow">
+    <div className={`rounded-lg shadow-md bg-secondary-lighter p-5 md:p-6 flex flex-col gap-x-6 relative h-fit`}>
+      <div className="relative flex gap-x-2 justify-between">
         <div className="grow">
           <h3 className="font-bold text-lg text-primary">{order.customer}</h3>
           <p className="text-xs md:text-sm text-primary-light">placed order at {order.timestamp}</p>
@@ -110,8 +115,11 @@ function Order({ order }: OrderProps) {
         <Map className="fill-primary-light size-3 md:size-4 flex-none" />
         <p className="text-primary-light text-xs md:text-sm">{order.address}</p>
       </div>
+
       <div className="flex items-center justify-between mt-6">
-        <Badge className="bg-orange-500/20 text-orange-500 font-semibold">{order.purchasedProducts.reduce((prev, curr) => (prev + curr.qty), 0)} items</Badge>
+        <Badge className="relative bg-orange-500/20 text-orange-500 hover:bg-orange-600/20 hover:text-orange-600 font-semibold cursor-pointer" onClick={togglePurchasedProducts}>
+          {order.purchasedProducts.reduce((prev, curr) => (prev + curr.qty), 0)} items
+        </Badge>
         <div className="flex items-center gap-x-2">
           {event.type === EventType.MAIL_ORDER && (
             <button className="flex items-center gap-x-2 px-4 py-2 text-sm font-bold bg-indigo-500 hover:bg-indigo-600 rounded-full text-white cursor-pointer" onClick={handleOpenShippingInfo}>
@@ -131,6 +139,15 @@ function Order({ order }: OrderProps) {
           </button>
         </div>
       </div>
+
+      {isPurchasedProductsVisible && (
+        <>
+          <h4 className="text-primary text-sm md:text-base font-bold w-fit mt-4">Purchased Products:</h4>
+          {order.purchasedProducts.map(product => (
+            <p key={product.name} className="text-xs md:text-sm text-primary-light mt-1">{product.qty}x {product.name}</p>
+          ))}
+        </>
+      )}
 
       {isInvoiceOpen && (
         <Invoice className="top-0 left-0 -z-10" eventName={`${event.name} ${event.type}`} orderNumber={order.rowNo - 1} purchasedProducts={order.purchasedProducts} recipient={order.customer} recipientEmail={order.email} onFinishGenerated={() => setIsInvoiceOpen(false)} key={order.timestamp} />
