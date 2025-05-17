@@ -36,7 +36,7 @@ function AppPage() {
           <p className="mt-4 text-secondary/70">Sampaikanlah dariku, walau hanya satu ayat</p>
           <Image src='/assets/jeje2.png' alt="Jeje Portrait" width={1228} height={2160} className="object-contain object-left w-full h-[calc(100%-64px)] py-8 px-8 "/>
         </div>
-        <div className="col-span-8 max-h-[calc(100dvh-64px)] overflow-y-auto">
+        <div className="col-span-8 max-h-[calc(100dvh-64px)] overflow-y-auto no-scrollbar">
           <div className="flex items-center justify-between mb-6">
             <h2 className="font-bold text-3xl text-secondary">Upcoming Events</h2>
             <Link href="/events" className="underline text-secondary">Manage all events</Link>

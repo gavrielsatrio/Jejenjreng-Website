@@ -13,3 +13,7 @@
   --color-secondary-lighter: #FDF6F4;
   --color-tertiary: #CBF000;
 }
+
+.no-scrollbar::-webkit-scrollbar {
+  width: 0px;
+}
