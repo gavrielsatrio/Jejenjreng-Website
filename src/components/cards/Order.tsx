@@ -133,7 +133,7 @@ function Order({ order }: OrderProps) {
       </div>
 
       {isInvoiceOpen && (
-        <Invoice className="top-0 left-0 -z-10" eventName={`${event.name} ${event.type}`} orderNumber={order.rowNo - 1} purchasedProducts={order.purchasedProducts} recipient={order.customer} onFinishGenerated={() => setIsInvoiceOpen(false)} key={order.timestamp} />
+        <Invoice className="top-0 left-0 -z-10" eventName={`${event.name} ${event.type}`} orderNumber={order.rowNo - 1} purchasedProducts={order.purchasedProducts} recipient={order.customer} recipientEmail={order.email} onFinishGenerated={() => setIsInvoiceOpen(false)} key={order.timestamp} />
       )}
     </div>
   )

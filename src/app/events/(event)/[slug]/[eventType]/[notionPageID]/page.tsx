@@ -230,8 +230,8 @@ function EventPage() {
                 </>
               ) : (
                 <div className="col-span-2 flex flex-col items-center justify-center p-8 gap-y-4">
-                  <Image src="/assets/wiwol-confused-transparent.png" width={510} height={489} alt="Empty Order Image" className="w-1/8 object-contain" />
-                  <h4 className="text-black/60 text-center">Oh no!,<br />There are still no orders for this event.</h4>
+                  <Image src="/assets/wiwol-confused-transparent.png" width={510} height={489} alt="Empty Order Image" className="w-1/4 md:w-1/8 object-contain" />
+                  <h4 className="text-secondary-light text-center text-sm md:text-base">Oh nooo!<br />It seems a little bit quiet here. There&apos;s no order to be shown.</h4>
                 </div>
               )}
             </>

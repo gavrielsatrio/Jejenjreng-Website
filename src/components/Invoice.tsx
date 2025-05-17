@@ -12,6 +12,7 @@ import { IPurchasedProduct } from "@/interfaces/models/IPurchasedProduct";
 interface InvoiceProps extends React.HTMLAttributes<HTMLDivElement> {
   eventName: string;
   recipient: string;
+  recipientEmail: string;
   orderNumber: number;
   purchasedProducts: Array<IPurchasedProduct>;
   onFinishGenerated?: () => void;
@@ -20,6 +21,7 @@ interface InvoiceProps extends React.HTMLAttributes<HTMLDivElement> {
 function Invoice({
   eventName,
   recipient,
+  recipientEmail,
   orderNumber,
   purchasedProducts,
   className,
