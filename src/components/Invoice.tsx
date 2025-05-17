@@ -84,7 +84,7 @@ function Invoice({
         {/* <Image width={150} height={150} alt="Ornament Image" src="/assets/ornament2-transparent.png" className="absolute bottom-0 right-0 z-10 size-24 translate-x-1/4 translate-y-1/2" /> */}
 
         <div className="font-shrikhand flex justify-between items-center uppercase">
-          <h3 className="text-3xl text-primary font-shrikhand">INVOICE</h3>
+          <h3 className="text-2xl text-primary font-shrikhand">INVOICE</h3>
           <p className="text-primary-light text-xs">JEJENJRENG&apos;s {eventName} inv.</p>
         </div>
         <hr className="border-secondary-dark my-2" />
