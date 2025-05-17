@@ -55,26 +55,12 @@ function Order({ order }: OrderProps) {
   }
 
   return (
-    <div className={`rounded-lg shadow-md bg-secondary-lighter p-6 flex flex-col gap-x-6 relative overflow-hidden`}>
-      <div className="relative flex justify-between grow">
-        <div>
+    <div className={`rounded-lg shadow-md bg-secondary-lighter p-5 md:p-6 flex flex-col gap-x-6 relative overflow-hidden`}>
+      <div className="relative flex gap-x-2 justify-between grow">
+        <div className="grow">
           <h3 className="font-bold text-lg text-primary">{order.customer}</h3>
-          <p className="text-sm text-primary-light">placed order at {order.timestamp}</p>
-
-          <div className="flex items-center gap-x-2 mt-4">
-            <Envelope className="fill-primary-light size-4 flex-none" />
-            <p className="text-primary-light text-sm">{order.email}</p>
-          </div>
-          <div className="flex items-center gap-x-2 mt-2">
-            <Phone className="fill-primary-light size-4 flex-none" />
-            <p className="text-primary-light text-sm">{order.phoneNumber}</p>
-          </div>
-          <div className="flex items-center gap-x-2 mt-2">
-            <Map className="fill-primary-light size-4 flex-none" />
-            <p className="text-primary-light text-sm">{order.address}</p>
-          </div>
+          <p className="text-xs md:text-sm text-primary-light">placed order at {order.timestamp}</p>
         </div>
-
         <Badge
           onClick={toggleStatusModal}
           loading={isOrderStatusLoading}
@@ -89,9 +75,9 @@ function Order({ order }: OrderProps) {
         </Badge>
 
         {isStatusModalVisible && (
-          <div className="flex flex-col bg-secondary-lighter border border-[#C8C8C8] absolute top-0 right-0 p-3 rounded-sm">
+          <div className="flex flex-col bg-secondary-lighter border border-[#C8C8C8] absolute top-0 right-0 p-3 rounded-sm max-w-3/4">
             <p className="text-sm font-semibold">Select order status:</p>
-            <div className="flex items-center gap-x-2 mt-2">
+            <div className="flex flex-wrap items-center gap-2 mt-2">
               {Object.values(OrderStatus).map((status, index) => (
                 <Badge
                   key={index}
@@ -112,6 +98,18 @@ function Order({ order }: OrderProps) {
           </div>
         )}
       </div>
+      <div className="flex items-center gap-x-2 mt-4">
+        <Envelope className="fill-primary-light size-3 md:size-4 flex-none" />
+        <p className="text-primary-light text-xs md:text-sm">{order.email}</p>
+      </div>
+      <div className="flex items-center gap-x-2 mt-2">
+        <Phone className="fill-primary-light size-3 md:size-4 flex-none" />
+        <p className="text-primary-light text-xs md:text-sm">{order.phoneNumber}</p>
+      </div>
+      <div className="flex items-center gap-x-2 mt-2">
+        <Map className="fill-primary-light size-3 md:size-4 flex-none" />
+        <p className="text-primary-light text-xs md:text-sm">{order.address}</p>
+      </div>
       <div className="flex items-center justify-between mt-6">
         <Badge className="bg-orange-500/20 text-orange-500 font-semibold">{order.purchasedProducts.reduce((prev, curr) => (prev + curr.qty), 0)} items</Badge>
         <div className="flex items-center gap-x-2">
@@ -121,12 +119,12 @@ function Order({ order }: OrderProps) {
               <span>Shipping Info</span>
             </button>
           )}
-          <button className="flex items-center gap-x-2 px-4 py-2 text-sm font-bold bg-emerald-500 hover:bg-emerald-600 rounded-full text-white cursor-pointer" onClick={handleOpenInvoice} disabled={isInvoiceOpen}>
+          <button className="flex items-center gap-x-2 px-4 py-2 text-xs md:text-sm font-bold bg-emerald-500 hover:bg-emerald-600 rounded-full text-white cursor-pointer" onClick={handleOpenInvoice} disabled={isInvoiceOpen}>
             {isInvoiceOpen ? (
-              <Loader className="size-5 fill-white animate-spin duration-1000" />
+              <Loader className="size-3.5 md:size-5 fill-white animate-spin duration-1000" />
             ) : (
               <>
-                <Receipt className="fill-white size-5" />
+                <Receipt className="fill-white size-3.5 md:size-5" />
                 <span>Invoice</span>
               </>
             )}

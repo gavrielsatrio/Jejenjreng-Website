@@ -7,7 +7,7 @@ interface SkeletonOrderProps extends React.HTMLAttributes<HTMLDivElement> {
 function SkeletonOrder({ className = '', count = 1 }: SkeletonOrderProps) {
   return (
     Array.from({ length: count }).map((_, index) => (
-      <div className={`rounded-lg shadow-md bg-secondary-lighter animate-pulse p-6 flex flex-col gap-x-6 ${className}`} key={index}>
+      <div className={`rounded-lg shadow-md bg-secondary-lighter animate-pulse p-5 md:p-6 flex flex-col gap-x-6 ${className}`} key={index}>
         <div className="flex justify-between">
           <div className="w-full">
             <Skeleton className="h-6 w-36" />
@@ -21,10 +21,7 @@ function SkeletonOrder({ className = '', count = 1 }: SkeletonOrderProps) {
         </div>
         <div className="flex items-center justify-between mt-6">
           <Skeleton className="w-20 h-5" />
-          <div className="flex items-center gap-x-2">
-            <Skeleton className="w-32 h-7" />
-            <Skeleton className="w-32 h-7" />
-          </div>
+          <Skeleton className="w-32 h-7" />
         </div>
       </div>
     ))

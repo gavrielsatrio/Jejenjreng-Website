@@ -180,11 +180,11 @@ function EventPage() {
   }, [isEventLoading]);
 
   return (
-    <Container className="bg-primary px-12 pt-12 min-h-dvh">
+    <Container className="bg-primary p-6 md:p-12 min-h-dvh">
       <div className="flex flex-col">
         <div className="flex items-center gap-x-1 w-fit cursor-pointer" onClick={handleBack}>
           <ChevronLeft className="size-6 fill-secondary" />
-          <span className="text-secondary">Back</span>
+          <span className="text-sm md:text-base text-secondary">Back</span>
         </div>
         {isEventLoading ? (
           <>
@@ -209,13 +209,13 @@ function EventPage() {
         )}
 
         <div className="flex justify-between mt-8 items-center">
-          <h3 className="text-xl font-bold text-secondary">Orders List</h3>
+          <h3 className="text-lg md:text-xl font-bold text-secondary">Orders List</h3>
           <div className="flex items-center gap-x-4">
-            <Search className="fill-secondary size-6 cursor-pointer" />
-            <Filter className="fill-secondary size-6 cursor-pointer" onClick={toggleFilter} />
+            <Search className="fill-secondary size-5 md:size-6 cursor-pointer" />
+            <Filter className="fill-secondary size-5 md:size-6 cursor-pointer" onClick={toggleFilter} />
           </div>
         </div>
-        <div className="grid grid-cols-2 mt-4 mb-8 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 mt-4 mb-8 gap-6">
           {isEventLoading || isOrderLoading || isProductsLoading ? (
             <SkeletonOrder count={6} />
           ) : (
@@ -241,17 +241,17 @@ function EventPage() {
 
       {filterAndSort.open && (
         <Modal onClickOutside={toggleFilter}>
-          <div className="bg-white rounded-lg p-6 w-1/2">
+          <div className="bg-secondary-lighter rounded-lg p-5 md:p-6 w-full mx-6 md:w-1/2">
             <div className="flex items-center justify-between">
-              <h4 className="font-bold text-xl">Filter and Sort</h4>
+              <h4 className="font-bold text-lg md:text-xl text-primary">Filter and Sort</h4>
               <div className="flex gap-x-2 items-center">
-                <Close className="size-6 fill-black cursor-pointer" onClick={toggleFilter} />
+                <Close className="size-6 fill-primary cursor-pointer" onClick={toggleFilter} />
               </div>
             </div>
 
             <hr className="border-black/15 my-4" />
 
-            <p className="font-semibold">Status</p>
+            <p className="font-semibold text-sm md:text-base text-primary">Status</p>
             <div className="flex flex-wrap gap-2 mt-2">
               {Object.values(OrderStatus).map((status, index) => (
                 <Badge
@@ -259,17 +259,17 @@ function EventPage() {
                   onClick={() => handleStatusFilter(status)}
                   className={classNames('flex items-center gap-x-2 cursor-pointer', {
                     'border border-black/15 text-black/60 hover:bg-black/5': !filterAndSort.filters.includes(status),
-                    'bg-blue-500/20 text-blue-500 hover:bg-blue-500/30': filterAndSort.filters.includes(status)
+                    'bg-primary-light/20 text-primary-light hover:bg-primary-light/30': filterAndSort.filters.includes(status)
                   })}
                 >
                   {filterAndSort.filters.includes(status) && (
-                    <Check className="size-4 fill-blue-500" />
+                    <Check className="size-4 fill-primary-light" />
                   )}
                   <span>{status}</span>
                 </Badge>
               ))}
             </div>
-            <p className="font-semibold mt-4">Sort By</p>
+            <p className="font-semibold mt-4 text-sm md:text-base text-primary">Sort By</p>
             <div className="flex flex-wrap gap-2 mt-2">
               {sortableFields.map((field, index) => (
                 <Badge
@@ -277,15 +277,15 @@ function EventPage() {
                   onClick={() => handleFieldSort(field)}
                   className={classNames('flex items-center gap-x-2 cursor-pointer', {
                     'border border-black/15 text-black/60 hover:bg-black/5': filterAndSort.sort.by !== field,
-                    'bg-blue-500/20 text-blue-500 hover:bg-blue-500/30': filterAndSort.sort.by === field
+                    'bg-primary-light/20 text-primary-light hover:bg-primary-light/30': filterAndSort.sort.by === field
                   })}
                 >
                   {filterAndSort.sort.by === field && (
                     <>
                       {filterAndSort.sort.direction === 'ascending' ? (
-                        <SortAZ className="size-4 fill-blue-500" />
+                        <SortAZ className="size-3 md:size-4 fill-primary-light" />
                       ) : (
-                        <SortZA className="size-4 fill-blue-500" />
+                        <SortZA className="size-3 md:size-4 fill-primary-light" />
                       )}
                     </>
                   )}
@@ -297,13 +297,13 @@ function EventPage() {
             <hr className="border-black/15 my-4" />
 
             <div className="flex items-center justify-between">
-              <button className="font-bold text-blue-500 cursor-pointer" onClick={() => {
+              <button className="font-bold text-sm md:text-base text-primary cursor-pointer" onClick={() => {
                 handleStatusFilter('');
                 handleFieldSort('');
               }}>Reset</button>
               <div className="flex gap-x-2">
-                <button className="px-8 py-2 rounded-full font-semibold cursor-pointer border border-black/60 text-black/60 hover:bg-black/5" onClick={toggleFilter}>Cancel</button>
-                <button className="px-8 py-2 rounded-full font-semibold cursor-pointer bg-blue-500 hover:bg-blue-600 text-white" onClick={applyFilter}>Apply</button>
+                <button className="px-6 py-1.5 md:px-8 md:py-2 text-sm md:text-base rounded-full font-semibold cursor-pointer border border-primary text-primary hover:bg-primary/5" onClick={toggleFilter}>Cancel</button>
+                <button className="px-6 py-1.5 md:px-8 md:py-2 text-sm md:text-base rounded-full font-semibold cursor-pointer bg-primary hover:bg-primary-dark text-secondary" onClick={applyFilter}>Apply</button>
               </div>
             </div>
           </div>

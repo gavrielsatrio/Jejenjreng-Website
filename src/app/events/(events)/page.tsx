@@ -29,15 +29,15 @@ function EventsPage() {
   }, []);
 
   return (
-    <Container className="bg-primary px-12 pt-12 min-h-dvh">
+    <Container className="bg-primary p-6 md:p-12 min-h-dvh">
       <div className="flex items-center gap-x-1 w-fit cursor-pointer" onClick={handleBack}>
         <ChevronLeft className="size-6 fill-secondary" />
         <span className="text-secondary">Back</span>
       </div>
-      <h1 className="font-bold text-3xl mt-6 text-secondary">All Events</h1>
-      <p className="mt-2 text-secondary/70">New events can be added from Notion</p>
+      <h1 className="font-bold text-xl md:text-3xl mt-6 text-secondary">All Events</h1>
+      <p className="text-sm md:mt-2 text-secondary/70">New events can be added from Notion</p>
 
-      <div className="grid grid-cols-2 mt-6 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 mt-6 gap-6">
         {isLoading ? (
           <SkeletonEvent count={6} />
         ) : (

@@ -14,26 +14,26 @@ interface EventProps extends React.HTMLAttributes<HTMLDivElement> {
 
 function Event({ event, className = '' }: EventProps) {
   return (
-    <Link href={`/events/${slug(event.name)}/${slug(event.type)}/${event.notionPageID}`} className={`rounded-lg shadow-md bg-secondary-lighter p-6 flex items-center gap-x-6 ${className}`}>
+    <Link href={`/events/${slug(event.name)}/${slug(event.type)}/${event.notionPageID}`} className={`rounded-lg shadow-md bg-secondary-lighter p-5 md:p-6 flex flex-col gap-y-4 md:flex-row md:items-center md:gap-x-6 ${className}`}>
       {event.type === 'Pickup' ? (
-        <Box className="p-4 size-14 fill-primary/80 box-border rounded-full bg-primary/15 flex-none" />
+        <Box className="p-3 md:p-4 size-12 md:size-14 fill-primary/80 box-border rounded-full bg-primary/15 flex-none" />
       ) : (
-        <Truck className="p-4 size-14 fill-primary/80 box-border rounded-full bg-primary/15 flex-none" />
+        <Truck className="p-3 md:p-4 size-12 md:size-14 fill-primary/80 box-border rounded-full bg-primary/15 flex-none" />
       )}
       <div className="grow self-start">
         <div className="flex justify-between">
           <div>
-            <h3 className="font-extrabold text-xl text-primary">{event.name}</h3>
+            <h3 className="font-extrabold text-lg md:text-xl text-primary">{event.name}</h3>
             <div className="flex items-center gap-x-2 mt-2">
               <Calendar className="fill-primary-light size-4 flex-none" />
-              <p className="text-primary-light font-medium text-sm">{event.date}</p>
+              <p className="text-primary-light font-medium text-xs md:text-sm">{event.date}</p>
             </div>
             <div className="flex items-center gap-x-2 mt-1">
               <Map className="fill-primary-light size-4 flex-none" />
-              <p className="text-primary-light font-medium text-sm">{event.location}</p>
+              <p className="text-primary-light font-medium text-xs md:text-sm">{event.location}</p>
             </div>
           </div>
-          <Badge className="bg-indigo-500/20 text-indigo-500 font-semibold italic self-start flex-none">{event.type}</Badge>
+          <Badge className="bg-indigo-500/20 text-indigo-500 font-semibold italic self-start flex-none text-xs md:text-sm">{event.type}</Badge>
         </div>
         <div className="flex items-center gap-2 mt-4 flex-wrap">
           <Badge className="bg-orange-500/20 text-orange-500">{event.orders.length} orders</Badge>

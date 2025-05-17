@@ -6,9 +6,9 @@ interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
 
 function Badge({ className = '', children, loading: isLoading = false, onClick }: BadgeProps) {
   return (
-    <span className={`px-3 py-1 rounded-full text-sm ${className}`} onClick={onClick}>
+    <span className={`px-3 py-1 rounded-full text-xs md:text-sm ${className}`} onClick={onClick}>
       {isLoading ? (
-        <Loader className="size-5 fill-inherit animate-spin duration-1000" />
+        <Loader className="size-4 md:size-5 fill-inherit animate-spin duration-1000" />
       ) : (
         children
       )}

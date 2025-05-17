@@ -7,7 +7,7 @@ interface SkeletonEventProps extends React.HTMLAttributes<HTMLDivElement> {
 function SkeletonEvent({ className = '', count = 1 }: SkeletonEventProps) {
   return (
     Array.from({ length: count }).map((_, index) => (
-      <div className={`rounded-lg shadow-sm bg-secondary-lighter p-6 flex items-center gap-x-6 animate-pulse ${className}`} key={index}>
+      <div className={`rounded-lg shadow-sm bg-secondary-lighter p-6 flex flex-col gap-y-4 md:flex-row md:items-center md:gap-x-6 animate-pulse ${className}`} key={index}>
         <Skeleton className="size-14 p-4 box-border flex-none" />
         <div className="grow self-start">
           <div className="flex justify-between">
