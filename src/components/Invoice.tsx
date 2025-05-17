@@ -142,7 +142,7 @@ function Invoice({
           <h4 className="text-primary font-shrikhand">Payment details</h4>
           <div className="grid grid-cols-2 gap-2 text-primary-light font-hammersmith-one text-xs mt-2">
             <p className="col-span-1">Bank Name: <br />BCA a.n. Hisana</p>
-            <p className="col-span-1">Email: <br />jejenjreng@gmail.com</p>
+            <p className="col-span-1">Email: <br />jejegenjang@gmail.com</p>
             <p className="col-span-1">Account No: <br />7401937939</p>
             <p className="col-span-1">Phone No: <br />+6287748274701</p>
           </div>

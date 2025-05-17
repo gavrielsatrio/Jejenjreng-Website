@@ -88,7 +88,7 @@ function Order({ order }: OrderProps) {
         </Badge>
 
         {isStatusModalVisible && (
-          <div className="flex flex-col bg-white border border-[#C8C8C8] absolute top-0 right-0 p-3 rounded-sm">
+          <div className="flex flex-col bg-secondary-lighter border border-[#C8C8C8] absolute top-0 right-0 p-3 rounded-sm">
             <p className="text-sm font-semibold">Select order status:</p>
             <div className="flex items-center gap-x-2 mt-2">
               {Object.values(OrderStatus).map((status, index) => (
