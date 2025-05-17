@@ -215,7 +215,7 @@ function EventPage() {
             <Filter className="fill-secondary size-6 cursor-pointer" onClick={toggleFilter} />
           </div>
         </div>
-        <div className="grid grid-cols-2 my-4 gap-6">
+        <div className="grid grid-cols-2 mt-4 mb-8 gap-6">
           {isEventLoading || isOrderLoading || isProductsLoading ? (
             <SkeletonOrder count={6} />
           ) : (

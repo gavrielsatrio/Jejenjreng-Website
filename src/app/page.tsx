@@ -29,8 +29,8 @@ function AppPage() {
   }, []);
 
   return (
-    <Container className="bg-primary px-12 pt-12">
-      <div className="grid grid-cols-12 min-h-dvh">
+    <Container className="bg-primary px-12 pt-12 min-h-dvh">
+      <div className="grid grid-cols-12">
         <div className="col-span-4 max-h-[calc(100vh-64px)] overflow-y-hidden">
           <h1 className="font-black text-5xl text-secondary">Jejenjreng</h1>
           <p className="mt-4 text-secondary/70">Sampaikanlah dariku, walau hanya satu ayat</p>
