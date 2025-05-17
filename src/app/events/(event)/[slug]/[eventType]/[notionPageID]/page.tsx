@@ -180,11 +180,11 @@ function EventPage() {
   }, [isEventLoading]);
 
   return (
-    <Container className="bg-[#FAFAFA] min-h-dvh px-16 py-16">
-      <div className="col-span-12 flex flex-col">
+    <Container className="bg-primary px-12 pt-12">
+      <div className="min-v-dvh flex flex-col">
         <div className="flex items-center gap-x-1 w-fit cursor-pointer" onClick={handleBack}>
-          <ChevronLeft className="size-6" />
-          <span>Back</span>
+          <ChevronLeft className="size-6 fill-secondary" />
+          <span className="text-secondary">Back</span>
         </div>
         {isEventLoading ? (
           <>
@@ -195,27 +195,27 @@ function EventPage() {
           </>
         ) : (
           <>
-            <h1 className="font-bold text-3xl mt-6">{event.name}</h1>
+            <h1 className="font-bold text-3xl mt-6 text-secondary">{event.name}</h1>
             <div className="flex items-center gap-x-2 mt-3">
-              <Calendar className="fill-black/60 size-4" />
-              <p className="text-black/60 font-medium text-sm">{event.date}</p>
+              <Calendar className="fill-secondary size-4" />
+              <p className="text-secondary font-medium text-sm">{event.date}</p>
             </div>
             <div className="flex items-center gap-x-2 mt-2">
-              <Map className="fill-black/60 size-4" />
-              <p className="text-black/60 font-medium text-sm">{event.location}</p>
+              <Map className="fill-secondary size-4" />
+              <p className="text-secondary font-medium text-sm">{event.location}</p>
             </div>
-            <Badge className="bg-indigo-500/20 text-indigo-500 font-semibold italic self-start flex-none mt-6">{event.type}</Badge>
+            <Badge className="bg-secondary/30 text-secondary font-semibold italic self-start flex-none mt-6">{event.type}</Badge>
           </>
         )}
 
         <div className="flex justify-between mt-8 items-center">
-          <h3 className="text-xl font-bold">Orders List</h3>
+          <h3 className="text-xl font-bold text-secondary">Orders List</h3>
           <div className="flex items-center gap-x-4">
-            <Search className="fill-black size-6 cursor-pointer" />
-            <Filter className="fill-black size-6 cursor-pointer" onClick={toggleFilter} />
+            <Search className="fill-secondary size-6 cursor-pointer" />
+            <Filter className="fill-secondary size-6 cursor-pointer" onClick={toggleFilter} />
           </div>
         </div>
-        <div className="grid grid-cols-2 mt-4 gap-6">
+        <div className="grid grid-cols-2 my-4 gap-6">
           {isEventLoading || isOrderLoading || isProductsLoading ? (
             <SkeletonOrder count={6} />
           ) : (

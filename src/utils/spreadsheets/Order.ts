@@ -72,7 +72,7 @@ async function getOrder({ spreadsheetID, eventType, rowNo }: OrderParams) {
 
   const order: IOrder = {
     rowNo: row.rowNumber,
-    timestamp: dayjs(dataObject[dataKeys[ColumnIndex.TIMESTAMP]].split(']')[1], ['DD/MM/YYYY HH:mm:ss', 'D/M/YYYY HH:mm:ss', 'MM/DD/YYYY HH:mm:ss', 'M/D/YYYY HH:mm:ss']).format('YYYY-MM-DD HH:mm:ss'),
+    timestamp: dayjs(dataObject[dataKeys[ColumnIndex.TIMESTAMP]].split(']')[1], ['DD/MM/YYYY H:mm:ss', 'D/M/YYYY H:mm:ss', 'MM/DD/YYYY H:mm:ss', 'M/D/YYYY H:mm:ss'], true).format('YYYY-MM-DD HH:mm:ss'),
     status: dataObject[dataKeys[ColumnIndex.TIMESTAMP]].split(']')[0].replace('[', ''),
     customer: dataObject[dataKeys[ColumnIndex.NAME]],
     email: dataObject[dataKeys[ColumnIndex.EMAIL]],
@@ -129,7 +129,7 @@ async function getOrders({ spreadsheetID, eventType }: OrderParams) {
 
     return {
       rowNo: row.rowNumber,
-      timestamp: dayjs(dataObject[dataKeys[ColumnIndex.TIMESTAMP]].split(']')[1], ['DD/MM/YYYY HH:mm:ss', 'D/M/YYYY HH:mm:ss', 'MM/DD/YYYY HH:mm:ss', 'M/D/YYYY HH:mm:ss']).format('YYYY-MM-DD HH:mm:ss'),
+      timestamp: dayjs(dataObject[dataKeys[ColumnIndex.TIMESTAMP]].split(']')[1], ['DD/MM/YYYY H:mm:ss', 'D/M/YYYY H:mm:ss', 'MM/DD/YYYY H:mm:ss', 'M/D/YYYY H:mm:ss'], true).format('YYYY-MM-DD HH:mm:ss'),
       status: dataObject[dataKeys[ColumnIndex.TIMESTAMP]].split(']')[0].replace('[', ''),
       customer: dataObject[dataKeys[ColumnIndex.NAME]],
       email: dataObject[dataKeys[ColumnIndex.EMAIL]],

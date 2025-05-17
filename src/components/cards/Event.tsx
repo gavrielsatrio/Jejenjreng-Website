@@ -14,23 +14,23 @@ interface EventProps extends React.HTMLAttributes<HTMLDivElement> {
 
 function Event({ event, className = '' }: EventProps) {
   return (
-    <Link href={`/events/${slug(event.name)}/${slug(event.type)}/${event.notionPageID}`} className={`border border-[#C8C8C8] rounded-lg shadow-sm bg-white p-6 flex items-center gap-x-6 ${className}`}>
+    <Link href={`/events/${slug(event.name)}/${slug(event.type)}/${event.notionPageID}`} className={`rounded-lg shadow-md bg-secondary-lighter p-6 flex items-center gap-x-6 ${className}`}>
       {event.type === 'Pickup' ? (
-        <Box className="p-4 size-14 fill-red-500/80 box-border rounded-full bg-red-500/10 flex-none" />
+        <Box className="p-4 size-14 fill-primary/80 box-border rounded-full bg-primary/15 flex-none" />
       ) : (
-        <Truck className="p-4 size-14 fill-blue-500/80 box-border rounded-full bg-blue-500/10 flex-none" />
+        <Truck className="p-4 size-14 fill-primary/80 box-border rounded-full bg-primary/15 flex-none" />
       )}
       <div className="grow self-start">
         <div className="flex justify-between">
           <div>
-            <h3 className="font-bold text-xl">{event.name}</h3>
+            <h3 className="font-extrabold text-xl text-primary">{event.name}</h3>
             <div className="flex items-center gap-x-2 mt-2">
-              <Calendar className="fill-black/50 size-4 flex-none" />
-              <p className="text-black/50 font-medium text-sm">{event.date}</p>
+              <Calendar className="fill-primary-light size-4 flex-none" />
+              <p className="text-primary-light font-medium text-sm">{event.date}</p>
             </div>
             <div className="flex items-center gap-x-2 mt-1">
-              <Map className="fill-black/50 size-4 flex-none" />
-              <p className="text-black/50 font-medium text-sm">{event.location}</p>
+              <Map className="fill-primary-light size-4 flex-none" />
+              <p className="text-primary-light font-medium text-sm">{event.location}</p>
             </div>
           </div>
           <Badge className="bg-indigo-500/20 text-indigo-500 font-semibold italic self-start flex-none">{event.type}</Badge>

@@ -55,23 +55,23 @@ function Order({ order }: OrderProps) {
   }
 
   return (
-    <div className={`border border-[#C8C8C8] rounded-lg shadow-sm bg-white p-6 flex flex-col gap-x-6 relative overflow-hidden`}>
+    <div className={`rounded-lg shadow-md bg-secondary-lighter p-6 flex flex-col gap-x-6 relative overflow-hidden`}>
       <div className="relative flex justify-between grow">
         <div>
-          <h3 className="font-bold text-lg">{order.customer}</h3>
-          <p className="text-sm text-black/40">placed order at {order.timestamp}</p>
+          <h3 className="font-bold text-lg text-primary">{order.customer}</h3>
+          <p className="text-sm text-primary-light">placed order at {order.timestamp}</p>
 
           <div className="flex items-center gap-x-2 mt-4">
-            <Envelope className="fill-black/60 size-4 flex-none" />
-            <p className="text-black/60 text-sm">{order.email}</p>
+            <Envelope className="fill-primary-light size-4 flex-none" />
+            <p className="text-primary-light text-sm">{order.email}</p>
           </div>
           <div className="flex items-center gap-x-2 mt-2">
-            <Phone className="fill-black/60 size-4 flex-none" />
-            <p className="text-black/60 text-sm">{order.phoneNumber}</p>
+            <Phone className="fill-primary-light size-4 flex-none" />
+            <p className="text-primary-light text-sm">{order.phoneNumber}</p>
           </div>
           <div className="flex items-center gap-x-2 mt-2">
-            <Map className="fill-black/60 size-4 flex-none" />
-            <p className="text-black/60 text-sm">{order.address}</p>
+            <Map className="fill-primary-light size-4 flex-none" />
+            <p className="text-primary-light text-sm">{order.address}</p>
           </div>
         </div>
 
