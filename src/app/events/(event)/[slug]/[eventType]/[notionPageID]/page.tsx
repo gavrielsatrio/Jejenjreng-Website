@@ -180,8 +180,8 @@ function EventPage() {
   }, [isEventLoading]);
 
   return (
-    <Container className="bg-primary px-12 pt-12">
-      <div className="min-v-dvh flex flex-col">
+    <Container className="bg-primary px-12 pt-12 min-h-dvh">
+      <div className="flex flex-col">
         <div className="flex items-center gap-x-1 w-fit cursor-pointer" onClick={handleBack}>
           <ChevronLeft className="size-6 fill-secondary" />
           <span className="text-secondary">Back</span>
