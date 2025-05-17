@@ -70,7 +70,7 @@ function Invoice({
   return (
     <div className={`absolute w-2xl bg-primary px-6 py-10 overflow-hidden ${className}`} ref={invoiceRef}>
       {/* <img src="/assets/fox-transparent.png" loading="lazy" alt="Fox Image" className="absolute bottom-4 -left-20 z-10 h-72 w-5/8 object-contain object-left"/> */}
-      <img src="/assets/jeje2.png" loading="lazy" alt="Fox Image" className="absolute -bottom-16 -left-8 z-10 w-1/2 object-contain object-right"/>
+      <img src="/assets/jeje2.png" loading="lazy" alt="Fox Image" className="absolute -bottom-20 -left-8 z-10 w-1/2 object-contain object-right"/>
       <img src="/assets/ornament-transparent.png" loading="lazy" alt="Ornament Image" className="absolute top-0 right-0 z-0 h-80 translate-x-1/2 -translate-y-1/3"/>
       <img src="/assets/ornament-transparent.png" loading="lazy" alt="Ornament Image" className="absolute bottom-0 left-0 z-0 h-[30rem] -translate-x-1/2 translate-y-8"/>
       <img src="/assets/ornament2-transparent.png" loading="lazy" alt="Ornament Image" className="absolute top-0 left-0 z-10 size-24"/>
