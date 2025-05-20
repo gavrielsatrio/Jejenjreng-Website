@@ -60,7 +60,7 @@ function Order({ order }: OrderProps) {
   }
 
   return (
-    <div className={`rounded-lg shadow-md bg-secondary-lighter p-5 md:p-6 flex flex-col gap-x-6 relative h-fit`}>
+    <div className="rounded-lg shadow-md bg-secondary-lighter p-5 md:p-6 flex flex-col gap-x-6 relative h-fit overflow-hidden">
       <div className="relative flex gap-x-2 justify-between">
         <div className="grow">
           <h3 className="font-bold text-lg text-primary">{order.customer}</h3>
@@ -133,7 +133,7 @@ function Order({ order }: OrderProps) {
             ) : (
               <>
                 <Receipt className="fill-white size-3.5 md:size-5" />
-                <span>Invoice</span>
+                <span>Send Invoice</span>
               </>
             )}
           </button>

@@ -29,6 +29,7 @@
       "@/states/*": ["./src/states/*"],
       "@/configs/*": ["./src/configs/*"],
       "@/hooks/*": ["./src/hooks/*"],
+      "@/mails/*": ["./src/mails/*"],
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],

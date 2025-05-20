@@ -1,12 +1,11 @@
 import dayjs from "dayjs";
-import Image from "next/image"
 import numeral from "numeral"
 import html2canvas from "html2canvas-pro";
-import * as htmlToImage from 'html-to-image';
-import { useAppSelector } from "@/hooks/useAppSelector";
 import { Fragment, useEffect, useRef } from "react"
 
 import { getProducts } from "@/slices/products/selector";
+import { useAppSelector } from "@/hooks/useAppSelector";
+import { sendInvoiceEmail } from "@/utils/mails";
 import { IPurchasedProduct } from "@/interfaces/models/IPurchasedProduct";
 
 interface InvoiceProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -40,29 +39,23 @@ function Invoice({
     // Scale the canvas into A5 width
     const canvas = await html2canvas(invoiceRef.current!, {
       logging: false,
-      scale: 3.6904761905,
+      scale: 3.6904761905,  
     });
 
     const dataURL = canvas.toDataURL("image/jpeg");
+
+    await sendInvoiceEmail({
+      recipient: recipientEmail,
+      subject: `Jejenjreng's ${eventName} PO`,
+      invoiceImage: dataURL
+    });
+
     const link = document.createElement('a');
     link.href = dataURL;
     link.download = `${recipient}-${eventName}.jpeg`;
     link.click();
 
     onFinishGenerated();
-  
-    
-    // const dataURL = await htmlToImage.toJpeg(invoiceRef.current!, {
-    //   pixelRatio: 3.6904761905,
-    //   cacheBust: false
-    // });
-
-    // const link = document.createElement('a');
-    // link.href = dataURL;
-    // link.download = `${recipient}-${eventName}.jpeg`;
-    // link.click();
-
-    // onFinishGenerated();
   }
 
   useEffect(() => {

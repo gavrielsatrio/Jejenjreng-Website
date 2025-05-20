@@ -1,4 +1,4 @@
 export enum EventType {
-  PICKUP = 'Pickup',
+  PICK_UP = 'Pick Up',
   MAIL_ORDER = 'Mail Order'
 }
