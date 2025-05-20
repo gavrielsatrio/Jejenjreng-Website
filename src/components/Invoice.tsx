@@ -44,11 +44,11 @@ function Invoice({
 
     const dataURL = canvas.toDataURL("image/jpeg");
 
-    await sendInvoiceEmail({
-      recipient: recipientEmail,
-      subject: `Jejenjreng's ${eventName} PO`,
-      invoiceImage: dataURL
-    });
+    // await sendInvoiceEmail({
+    //   recipient: recipientEmail,
+    //   subject: `Jejenjreng's ${eventName} PO`,
+    //   invoiceImage: dataURL
+    // });
 
     const link = document.createElement('a');
     link.href = dataURL;
