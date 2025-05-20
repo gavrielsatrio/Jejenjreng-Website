@@ -17,8 +17,6 @@ function InvoiceMail() {
           }} />
         </p>
 
-        <hr />
-
         <p style={{
           margin: '1rem 0',
           textAlign: 'center'
