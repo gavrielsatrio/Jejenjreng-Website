@@ -9,11 +9,11 @@ function InvoiceMail() {
       }}>
         <p style={{
           margin: '0',
-          padding: '1.5rem 0 1rem',
+          padding: '2.5rem 0 1rem',
           textAlign: 'center'
         }}>
           <img src="cid:jejenjreng_logotype" alt="Logotype Image" style={{
-            height: '1.5rem'
+            height: '2rem'
           }} />
         </p>
 
