@@ -19,10 +19,16 @@ interface OrderParams {
   rowNo?: number;
 }
 
-interface UpdateOrderParams {
+interface UpdateOrderStatusParams {
   spreadsheetID: string;
   rowNo: number;
   status: string;
+}
+
+interface UpdateOrderShippingFeeParams {
+  spreadsheetID: string;
+  rowNo: number;
+  shippingFee: number;
 }
 
 async function getOrder({ spreadsheetID, eventType, rowNo }: OrderParams) {
@@ -55,6 +61,14 @@ async function getOrder({ spreadsheetID, eventType, rowNo }: OrderParams) {
       row.set(dataKeys[ColumnIndex.TIMESTAMP], `[${OrderStatus.PENDING}]${dataObject[dataKeys[ColumnIndex.TIMESTAMP]]}`);
       await row.save();
     }
+
+    if(eventType === EventType.MAIL_ORDER) {
+      const shippingExpedition: string = dataObject[dataKeys[dataKeys.length - 1]]!;
+      if(!shippingExpedition.includes('[')) {
+        row.set(dataKeys[dataKeys.length - 1], `[0]${dataObject[dataKeys[dataKeys.length - 1]]}`);
+        await row.save();
+      }
+    }
   });
 
   const row = rows[rowNo - 2];
@@ -80,7 +94,8 @@ async function getOrder({ spreadsheetID, eventType, rowNo }: OrderParams) {
     phoneNumber: dataObject[dataKeys[ColumnIndex.PHONENUMBER]].substring(0, 2).replace("8", "08").replace("+62", "0") + dataObject[dataKeys[ColumnIndex.PHONENUMBER]].substring(2),
     socialMedia: dataObject[dataKeys[ColumnIndex.SOCIALMEDIA]],
     purchasedProducts,
-    preferedExpedition: eventType === EventType.MAIL_ORDER ? dataObject[dataKeys[dataKeys.length - 1]] : undefined
+    shippingExpedition: eventType === EventType.MAIL_ORDER ? dataObject[dataKeys[dataKeys.length - 1]].split(']')[1] : undefined,
+    shippingFee: eventType === EventType.MAIL_ORDER ? Number(dataObject[dataKeys[dataKeys.length - 1]].split(']')[0].replace('[', '')) : undefined
   };
 
   return order;
@@ -112,6 +127,14 @@ async function getOrders({ spreadsheetID, eventType }: OrderParams) {
       row.set(dataKeys[ColumnIndex.TIMESTAMP], `[${OrderStatus.PENDING}]${dataObject[dataKeys[ColumnIndex.TIMESTAMP]]}`);
       await row.save();
     }
+
+    if(eventType === EventType.MAIL_ORDER) {
+      const shippingExpedition: string = dataObject[dataKeys[dataKeys.length - 1]]!;
+      if(!shippingExpedition.includes('[')) {
+        row.set(dataKeys[dataKeys.length - 1], `[0]${dataObject[dataKeys[dataKeys.length - 1]]}`);
+        await row.save();
+      }
+    }
   });
 
   const orders = rows.map<IOrder>((row) => {
@@ -137,14 +160,15 @@ async function getOrders({ spreadsheetID, eventType }: OrderParams) {
       phoneNumber: dataObject[dataKeys[ColumnIndex.PHONENUMBER]].substring(0, 2).replace("8", "08").replace("+62", "0") + dataObject[dataKeys[ColumnIndex.PHONENUMBER]].substring(2),
       socialMedia: dataObject[dataKeys[ColumnIndex.SOCIALMEDIA]],
       purchasedProducts,
-      preferedExpedition: eventType === EventType.MAIL_ORDER ? dataObject[dataKeys[dataKeys.length - 1]] : undefined
+      shippingExpedition: eventType === EventType.MAIL_ORDER ? dataObject[dataKeys[dataKeys.length - 1]].split(']')[1] : undefined,
+      shippingFee: eventType === EventType.MAIL_ORDER ? Number(dataObject[dataKeys[dataKeys.length - 1]].split(']')[0].replace('[', '')) : undefined
     }
   });
 
   return orders;
 }
 
-async function updateOrderStatus({ spreadsheetID, rowNo, status }: UpdateOrderParams) {
+async function updateOrderStatus({ spreadsheetID, rowNo, status }: UpdateOrderStatusParams) {
   if (spreadsheetID === '') {
     return;
   }
@@ -170,8 +194,35 @@ async function updateOrderStatus({ spreadsheetID, rowNo, status }: UpdateOrderPa
   await row.save();
 }
 
+async function updateOrderShippingFee({ spreadsheetID, rowNo, shippingFee }: UpdateOrderShippingFeeParams) {
+  if (spreadsheetID === '') {
+    return;
+  }
+
+  const serviceAccountAuth = new JWT({
+    email: process.env.SPREADSHEET_SERVICE_ACCOUNT_EMAIL,
+    key: process.env.SPREADSHEET_SERVICE_ACCOUNT_PRIVATE_KEY,
+    scopes: [
+      'https://www.googleapis.com/auth/spreadsheets'
+    ]
+  });
+
+  const spreadsheet = new GoogleSpreadsheet(spreadsheetID, serviceAccountAuth);
+  await spreadsheet.loadInfo();
+
+  const rows = await spreadsheet.sheetsByIndex[0].getRows<Record<string, string>>();
+  const row = rows[rowNo - 2];
+
+  const dataObject = row.toObject();
+  const dataKeys = Object.keys(dataObject);
+
+  row.set(dataKeys[dataKeys.length - 1], `[${shippingFee}]${dataObject[dataKeys[dataKeys.length - 1]]?.split(']')[1]}`);
+  await row.save();
+}
+
 export {
   getOrder,
   getOrders,
-  updateOrderStatus
+  updateOrderStatus,
+  updateOrderShippingFee
 }

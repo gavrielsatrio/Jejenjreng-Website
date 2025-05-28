@@ -10,29 +10,37 @@ import { useAppSelector } from "@/hooks/useAppSelector";
 import { sendInvoiceEmail } from "@/utils/mails";
 
 import { IPurchasedProduct } from "@/interfaces/models/IPurchasedProduct";
+import { EventType } from "@/enums/EventType";
 
 interface InvoiceProps extends React.HTMLAttributes<HTMLDivElement> {
   eventName: string;
+  eventType: string;
   recipient: string;
   recipientEmail: string;
   orderNumber: number;
   purchasedProducts: Array<IPurchasedProduct>;
+  shippingExpedition?: string;
+  shippingFee?: number;
   onFinishGenerated?: () => void;
 }
 
 function Invoice({
   className,
   eventName,
+  eventType,
   recipient,
   orderNumber,
   recipientEmail,
+  shippingFee = 0,
   purchasedProducts,
-  onFinishGenerated = () => {}
+  shippingExpedition,
+  onFinishGenerated = () => { }
 }: InvoiceProps) {
   const invoiceRef = useRef<HTMLDivElement>(null);
   const products = useAppSelector(getProducts);
 
-  let totalPrice = 0;
+  const packagingFee = 10000;
+  let totalPrice = shippingFee + (eventType === EventType.MAIL_ORDER ? packagingFee : 0);
 
   const saveInvoice = async () => {
     if (!invoiceRef.current || !invoiceRef) {
@@ -42,7 +50,7 @@ function Invoice({
     // Scale the canvas into A5 width
     const canvas = await html2canvas(invoiceRef.current!, {
       logging: false,
-      scale: 3.6904761905,  
+      scale: 3.6904761905,
     });
 
     const dataURL = canvas.toDataURL("image/jpeg");
@@ -55,7 +63,7 @@ function Invoice({
 
     const link = document.createElement('a');
     link.href = dataURL;
-    link.download = `${recipient.toUpperCase()}-${eventName.toUpperCase()}.jpeg`;
+    link.download = `INVOICE-${eventName.toUpperCase()}-${recipient.toUpperCase()}.jpeg`;
     link.click();
 
     onFinishGenerated();
@@ -67,13 +75,13 @@ function Invoice({
 
   return (
     <div className={`absolute w-2xl bg-primary px-6 py-10 overflow-hidden ${className}`} ref={invoiceRef}>
-      <img src="/assets/jeje2.png" loading="lazy" alt="Fox Image" className="absolute -bottom-20 -left-8 z-10 w-1/2 object-contain object-right"/>
-      <img src="/assets/ornament-transparent.png" loading="lazy" alt="Ornament Image" className="absolute top-0 right-0 z-0 h-80 translate-x-1/2 -translate-y-1/3"/>
-      <img src="/assets/ornament-transparent.png" loading="lazy" alt="Ornament Image" className="absolute bottom-0 left-0 z-0 h-[30rem] -translate-x-1/2 translate-y-8"/>
-      <img src="/assets/ornament2-transparent.png" loading="lazy" alt="Ornament Image" className="absolute top-0 left-0 z-10 size-24"/>
+      <img src="/assets/jeje2.png" loading="lazy" alt="Fox Image" className="absolute -bottom-20 -left-8 z-10 w-1/2 object-contain object-right" />
+      <img src="/assets/ornament-transparent.png" loading="lazy" alt="Ornament Image" className="absolute top-0 right-0 z-0 h-80 translate-x-1/2 -translate-y-1/3" />
+      <img src="/assets/ornament-transparent.png" loading="lazy" alt="Ornament Image" className="absolute bottom-0 left-0 z-0 h-[30rem] -translate-x-1/2 translate-y-8" />
+      <img src="/assets/ornament2-transparent.png" loading="lazy" alt="Ornament Image" className="absolute top-0 left-0 z-10 size-24" />
 
       <div className="relative bg-secondary-lighter rounded-3xl flex flex-col p-6 tracking-widest z-30">
-        <img src="/assets/ornament2-transparent.png" loading="lazy" alt="Ornament Image" className="absolute bottom-0 right-0 z-10 size-24 translate-x-1/4 translate-y-1/2"/>
+        <img src="/assets/ornament2-transparent.png" loading="lazy" alt="Ornament Image" className="absolute bottom-0 right-0 z-10 size-24 translate-x-1/4 translate-y-1/2" />
 
         <div className="font-shrikhand flex justify-between items-center uppercase">
           <h3 className="text-2xl text-primary font-shrikhand">INVOICE</h3>
@@ -97,7 +105,7 @@ function Invoice({
           <div className="col-span-1">SUBTOTAL</div>
         </div>
         <hr className="border-secondary-dark my-2" />
-        <div className="grid grid-cols-3 gap-y-4 text-primary-light font-hammersmith-one text-xs text-center px-4 py-8 tracking-normal">
+        <div className="grid grid-cols-3 gap-y-4 text-primary-light font-hammersmith-one text-xs text-center p-4 tracking-normal">
           {purchasedProducts.map((purchasedProduct, index) => {
             const product = products.find(product => product.name === purchasedProduct.name);
             let productPrice = 0;
@@ -111,13 +119,30 @@ function Invoice({
             return (
               <Fragment key={index}>
                 <div className="col-span-1">{purchasedProduct.name}</div>
-                <div className="col-span-1">{productPrice} X {purchasedProduct.qty}</div>
-                <div className="col-span-1">{productPrice * purchasedProduct.qty}k</div>
+                <div className="col-span-1">{productPrice / 1000}k X {purchasedProduct.qty}</div>
+                <div className="col-span-1">{productPrice * purchasedProduct.qty / 1000}k</div>
               </Fragment>
             )
           })}
         </div>
         <hr className="border-secondary-dark my-2" />
+        {eventType === EventType.MAIL_ORDER && (
+          <div className="grid grid-cols-3 gap-y-4 text-primary-light font-hammersmith-one text-xs text-center p-4 tracking-normal">
+            <div className="col-span-1">
+              Packaging Fee
+            </div>
+            <div className="col-span-1"></div>
+            <div className="col-span-1">{packagingFee / 1000}k</div>
+
+            <div className="col-span-1">
+              Shipping Fee
+              <br />
+              ({shippingExpedition})
+            </div>
+            <div className="col-span-1"></div>
+            <div className="col-span-1">{shippingFee / 1000}k</div>
+          </div>
+        )}
         <div className="py-4 font-shrikhand text-right">
           <p className="text-primary">
             <span className="text-primary-light me-6"> Total:</span>

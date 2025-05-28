@@ -37,7 +37,7 @@ function Event({ event, className = '' }: EventProps) {
           <Badge className="bg-indigo-500/20 text-indigo-500 font-semibold italic self-start flex-none text-xs md:text-sm">{event.type}</Badge>
         </div>
         <div className="flex items-center gap-2 mt-4 flex-wrap">
-          <Badge className="bg-orange-500/20 text-orange-500">{event.orders.length} orders</Badge>
+          <Badge className="bg-primary-light/20 text-primary-light">{event.orders.length} orders</Badge>
           <Badge className="bg-emerald-500/20 text-emerald-500">{event.orders.filter(order => order.status === OrderStatus.DELIVERED).length} delivered</Badge>
           <Badge className="bg-yellow-900/20 text-yellow-900">{event.orders.filter(order => order.status === OrderStatus.PACKED).length} packed</Badge>
           <Badge className="bg-blue-500/20 text-blue-500">{event.orders.filter(order => order.status === OrderStatus.PAID).length} paid</Badge>

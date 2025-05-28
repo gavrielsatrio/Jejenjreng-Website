@@ -22,6 +22,12 @@ interface UpdateOrderStatusProps {
   status: string;
 }
 
+interface UpdateOrderShippingFeeProps {
+  spreadsheetID: string;
+  rowNo: number;
+  shippingFee: number;
+}
+
 interface InitialState extends OrderFilterAndSortProps {
   orders: Array<IOrder>;
   shownOrders: Array<IOrder>;
@@ -143,6 +149,39 @@ export const orders = createSlice({
       ...prevState,
       isError: true
     }));
+
+
+    builder.addCase(updateOrderShippingFee.pending, (prevState) => ({
+      ...prevState
+    }))
+    .addCase(updateOrderShippingFee.fulfilled, (prevState, action) => {
+      const updatedOrderIndex = prevState.orders.findIndex(order => order.rowNo === action.meta.arg.rowNo);
+      const updatedShownOrderIndex = prevState.shownOrders.findIndex(order => order.rowNo === action.meta.arg.rowNo);
+
+      return {
+        ...prevState,
+        orders: [
+          ...prevState.orders.slice(0, updatedOrderIndex),
+          {
+            ...prevState.orders[updatedOrderIndex],
+            shippingFee: action.meta.arg.shippingFee
+          },
+          ...prevState.orders.slice(updatedOrderIndex + 1)
+        ],
+        shownOrders: [
+          ...prevState.shownOrders.slice(0, updatedShownOrderIndex),
+          {
+            ...prevState.shownOrders[updatedShownOrderIndex],
+            shippingFee: action.meta.arg.shippingFee
+          },
+          ...prevState.shownOrders.slice(updatedShownOrderIndex + 1)
+        ]
+      }
+    })
+    .addCase(updateOrderShippingFee.rejected, (prevState) => ({
+      ...prevState,
+      isError: true
+    }));
   }
 })
 
@@ -167,6 +206,24 @@ export const updateOrderStatus = createAsyncThunk<void, UpdateOrderStatusProps>(
       body: JSON.stringify({
         rowNo,
         status,
+      })
+    });
+
+    await request.json();
+  } catch {
+    return rejectWithValue('Failed');
+  }
+})
+
+export const updateOrderShippingFee = createAsyncThunk<void, UpdateOrderShippingFeeProps>('orders/updateShippingFee', async ({ spreadsheetID, rowNo, shippingFee }, { rejectWithValue }) => {
+  try {
+    const request = await fetch(`/api/orders/${spreadsheetID}/${rowNo}/shipping-fee`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        shippingFee
       })
     });
 

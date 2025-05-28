@@ -10,5 +10,6 @@ export interface IOrder {
   address: string;
   socialMedia: string;
   purchasedProducts: Array<IPurchasedProduct>;
-  preferedExpedition?: string;
+  shippingExpedition?: string;
+  shippingFee?: number;
 }

@@ -231,7 +231,11 @@ function EventPage() {
               ) : (
                 <div className="col-span-2 flex flex-col items-center justify-center p-8 gap-y-4">
                   <Image src="/assets/wiwol-confused-transparent.png" width={510} height={489} alt="Empty Order Image" className="w-1/4 md:w-1/8 object-contain" />
-                  <h4 className="text-secondary-light text-center text-sm md:text-base">Oh nooo!<br />It seems a little bit quiet here. There&apos;s no order to be shown.</h4>
+                  <h4 className="text-secondary-light text-center text-sm md:text-lg">
+                    <span className="text-4xl font-bold">Waduh!</span>
+                    <br />
+                    Belum ada orderan keknya &#58;&quot;&#41;
+                  </h4>
                 </div>
               )}
             </>

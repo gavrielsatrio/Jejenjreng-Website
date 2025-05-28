@@ -1,10 +1,14 @@
+'use client'
+
+import numeral from "numeral"
 import classNames from "classnames"
 
-import { useState } from "react"
+import { ChangeEvent, FormEvent, useEffect, useRef, useState } from "react"
 import { useAppDispatch } from "@/hooks/useAppDispatch"
 import { useAppSelector } from "@/hooks/useAppSelector"
 
-import { updateOrderStatus } from "@/slices/orders"
+import { getProducts } from "@/slices/products/selector"
+import { updateOrderShippingFee, updateOrderStatus } from "@/slices/orders"
 import { getEvent, getSpreadsheetID } from "@/slices/event/selector"
 
 import { IOrder } from "@/interfaces/models/IOrder"
@@ -14,7 +18,7 @@ import { Invoice } from "@/components/Invoice"
 import { EventType } from "@/enums/EventType"
 import { OrderStatus } from "@/enums/OrderStatus"
 import { ShippingInfo } from "@/components/ShippingInfo"
-import { Close, Envelope, Loader, Map, Phone, Receipt, Truck } from "@/icons"
+import { Check, Close, Envelope, Loader, Map, Phone, Receipt, Truck } from "@/icons"
 
 interface OrderProps {
   order: IOrder;
@@ -23,14 +27,23 @@ interface OrderProps {
 function Order({ order }: OrderProps) {
   const dispatch = useAppDispatch();
 
+  let totalPrice = 0;
+
   const event = useAppSelector(getEvent);
+  const products = useAppSelector(getProducts);
   const eventSpreadsheetID = useAppSelector(getSpreadsheetID);
 
-  const [isOrderStatusLoading, setIsOrderStatusLoading] = useState(false);
+  const shippingFeeInput = useRef<HTMLInputElement>(null);
+
+  const [shippingFee, setShippingFee] = useState('0');
   const [isInvoiceOpen, setIsInvoiceOpen] = useState(false);
   const [isShippingInfoOpen, setShippingInfoOpen] = useState(false);
+  const [isShippingFeeLoading, setIsShippingFeeLoading] = useState(false);
+  const [isOrderStatusLoading, setIsOrderStatusLoading] = useState(false);
   const [isStatusModalVisible, setIsStatusModalVisible] = useState(false);
+  const [isShippingFeeUpdatable, setIsShippingFeeUpdatable] = useState(false);
   const [isPurchasedProductsVisible, setIsPurchasedProductsVisible] = useState(false);
+
 
   const toggleStatusModal = () => {
     setIsStatusModalVisible(prev => !prev);
@@ -40,8 +53,16 @@ function Order({ order }: OrderProps) {
     setIsPurchasedProductsVisible(prev => !prev);
   }
 
+  const toggleUpdateShippingFee = () => {
+    setIsShippingFeeUpdatable(prev => !prev);
+  }
+
   const handleUpdateStatus = async (status: string) => {
-    toggleStatusModal();
+    if (isOrderStatusLoading) {
+      return;
+    }
+
+    setIsStatusModalVisible(false);
     setIsOrderStatusLoading(true);
 
     await dispatch(updateOrderStatus({
@@ -53,7 +74,33 @@ function Order({ order }: OrderProps) {
     setIsOrderStatusLoading(false);
   }
 
+  const handleShippingFeeChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const shippingFeeNumeral = Number(e.target.value.replace('.', ''));
+    setShippingFee(shippingFeeNumeral.toString());
+  }
+
+  const handleUpdateShippingFee = async () => {
+    if (isShippingFeeLoading) {
+      return;
+    }
+
+    setIsShippingFeeUpdatable(false);
+    setIsShippingFeeLoading(true);
+
+    await dispatch(updateOrderShippingFee({
+      spreadsheetID: eventSpreadsheetID,
+      rowNo: order.rowNo,
+      shippingFee: Number(shippingFee)
+    }));
+
+    setIsShippingFeeLoading(false);
+  }
+
   const handleOpenInvoice = () => {
+    if (isInvoiceOpen) {
+      return;
+    }
+
     setIsInvoiceOpen(true);
   }
 
@@ -61,8 +108,23 @@ function Order({ order }: OrderProps) {
     setShippingInfoOpen(true);
   }
 
+  useEffect(() => {
+    if (event.type === EventType.MAIL_ORDER && order.shippingFee) {
+      setShippingFee(order.shippingFee.toString());
+    }
+  }, []);
+
+  useEffect(() => {
+    if (isShippingFeeUpdatable && shippingFeeInput.current) {
+      shippingFeeInput.current.focus();
+    }
+  }, [isShippingFeeUpdatable]);
+
   return (
-    <div className="rounded-lg shadow-md bg-secondary-lighter p-5 md:p-6 flex flex-col gap-x-6 relative min-h-[268px] h-fit overflow-hidden">
+    <div className={classNames("rounded-lg shadow-md bg-secondary-lighter p-5 md:p-6 flex flex-col gap-x-6 relative h-fit overflow-hidden", {
+      'md:min-h-[316px]': event.type === EventType.MAIL_ORDER,
+      'md:min-h-[268px]': event.type === EventType.PICK_UP
+    })}>
       <div className="relative flex gap-x-2 justify-between">
         <div className="grow">
           <h3 className="font-bold text-lg text-primary">{order.customer}</h3>
@@ -120,6 +182,32 @@ function Order({ order }: OrderProps) {
         <Map className="fill-primary-light size-3 md:size-4 flex-none" />
         <p className="text-primary-light text-xs md:text-sm">{order.address}</p>
       </div>
+      {event.type === EventType.MAIL_ORDER && (
+        <div className="flex items-center gap-x-2 mt-2">
+          <Truck className="fill-primary-light size-3 md:size-4 flex-none" />
+          <div className="text-primary-light text-xs md:text-sm">
+            {isShippingFeeLoading ? (
+              <Loader className="fill-primary-light size-3.5 md:size-5 animate-spin duration-1000" />
+            ) : isShippingFeeUpdatable ? (
+              <form className="flex items-center gap-x-2 border rounded-sm border-primary" onSubmit={(e: FormEvent<HTMLFormElement>) => {
+                e.preventDefault();
+                handleUpdateShippingFee();
+              }}>
+                <input type="text" className="focus:outline-0 p-2" value={numeral(shippingFee).format('0,0').replace(',', '.')} onChange={handleShippingFeeChange} ref={shippingFeeInput} />
+                <Check className="fill-primary size-5 cursor-pointer" onClick={handleUpdateShippingFee} />
+                <Close className="fill-primary size-5 cursor-pointer" onClick={toggleUpdateShippingFee} />
+              </form>
+            ) : (
+              <>
+                <p>IDR {numeral(shippingFee).format('0,0').replace(',', '.')},-</p>
+                {order.status === OrderStatus.PENDING && (
+                  <button className="block underline cursor-pointer font-medium hover:text-primary" onClick={toggleUpdateShippingFee}>Update Shipping Fee</button>
+                )}
+              </>
+            )}
+          </div>
+        </div>
+      )}
 
       <div className="grow flex items-end">
         <div className="flex w-full items-center justify-between mt-6">
@@ -127,7 +215,7 @@ function Order({ order }: OrderProps) {
             {order.purchasedProducts.reduce((prev, curr) => (prev + curr.qty), 0)} items
           </Badge>
           <div className="flex items-center gap-x-2">
-            {event.type === EventType.MAIL_ORDER && (
+            {event.type === EventType.MAIL_ORDER && order.status === OrderStatus.PACKED && (
               <button className="flex items-center gap-x-2 px-4 py-2 text-sm font-bold bg-blue-800 hover:bg-blue-900 rounded-full text-white cursor-pointer" onClick={handleOpenShippingInfo}>
                 {isShippingInfoOpen ? (
                   <Loader className="size-3.5 md:size-5 fill-white animate-spin duration-1000" />
@@ -159,18 +247,33 @@ function Order({ order }: OrderProps) {
       {isPurchasedProductsVisible && (
         <>
           <h4 className="text-primary text-sm md:text-base font-bold w-fit mt-4">Purchased Products:</h4>
-          {order.purchasedProducts.map(product => (
-            <p key={product.name} className="text-xs md:text-sm text-primary-light mt-1">{product.qty}x {product.name}</p>
-          ))}
+          {order.purchasedProducts.map(purchasedProduct => {
+            const product = products.find(product => product.name === purchasedProduct.name);
+            let productPrice = 0;
+
+            if (product) {
+              productPrice = product.price;
+            }
+
+            totalPrice += productPrice * purchasedProduct.qty;
+
+            return (
+              <p key={purchasedProduct.name} className="text-xs md:text-sm text-primary-light mt-1">{purchasedProduct.qty}x {purchasedProduct.name}</p>
+            )
+          })}
+          <h5 className="text-xs md:text-sm font-medium text-primary-light mt-2">Total: IDR {numeral(totalPrice).format('0,0').replace(',', '.')},-</h5>
         </>
       )}
 
       {isInvoiceOpen && (
-        <Invoice className="top-0 left-0 -z-10" eventName={`${event.name} ${event.type}`} orderNumber={order.rowNo - 1} purchasedProducts={order.purchasedProducts} recipient={order.customer} recipientEmail={order.email} onFinishGenerated={() => setIsInvoiceOpen(false)} key={order.timestamp} />
+        <Invoice className="top-0 left-0 -z-10" eventType={event.type} eventName={`${event.name} ${event.type}`} orderNumber={order.rowNo - 1} purchasedProducts={order.purchasedProducts} recipient={order.customer} recipientEmail={order.email} shippingFee={order.shippingFee} shippingExpedition={order.shippingExpedition} onFinishGenerated={async () => {
+          await handleUpdateStatus(OrderStatus.INVOICE_SENT);
+          setIsInvoiceOpen(false);
+        }} key={order.timestamp} />
       )}
 
       {isShippingInfoOpen && (
-        <ShippingInfo eventName={`${event.name} ${event.type}`} recipient={order.customer} address={order.address} phoneNumber={order.phoneNumber} className="top-0 left-0 -z-10" onFinishGenerated={() => setShippingInfoOpen(false)}/>
+        <ShippingInfo eventName={`${event.name} ${event.type}`} recipient={order.customer} address={order.address} phoneNumber={order.phoneNumber} className="top-0 left-0 -z-10" onFinishGenerated={() => setShippingInfoOpen(false)} />
       )}
     </div>
   )
