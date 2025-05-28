@@ -13,6 +13,7 @@ import { Badge } from "@/components/Badge"
 import { Invoice } from "@/components/Invoice"
 import { EventType } from "@/enums/EventType"
 import { OrderStatus } from "@/enums/OrderStatus"
+import { ShippingInfo } from "@/components/ShippingInfo"
 import { Close, Envelope, Loader, Map, Phone, Receipt, Truck } from "@/icons"
 
 interface OrderProps {
@@ -27,6 +28,7 @@ function Order({ order }: OrderProps) {
 
   const [isOrderStatusLoading, setIsOrderStatusLoading] = useState(false);
   const [isInvoiceOpen, setIsInvoiceOpen] = useState(false);
+  const [isShippingInfoOpen, setShippingInfoOpen] = useState(false);
   const [isStatusModalVisible, setIsStatusModalVisible] = useState(false);
   const [isPurchasedProductsVisible, setIsPurchasedProductsVisible] = useState(false);
 
@@ -56,11 +58,11 @@ function Order({ order }: OrderProps) {
   }
 
   const handleOpenShippingInfo = () => {
-
+    setShippingInfoOpen(true);
   }
 
   return (
-    <div className="rounded-lg shadow-md bg-secondary-lighter p-5 md:p-6 flex flex-col gap-x-6 relative h-fit overflow-hidden">
+    <div className="rounded-lg shadow-md bg-secondary-lighter p-5 md:p-6 flex flex-col gap-x-6 relative min-h-[268px] h-fit overflow-hidden">
       <div className="relative flex gap-x-2 justify-between">
         <div className="grow">
           <h3 className="font-bold text-lg text-primary">{order.customer}</h3>
@@ -72,8 +74,9 @@ function Order({ order }: OrderProps) {
           className={classNames('font-semibold italic self-start flex-none cursor-pointer', {
             'bg-red-500/20 text-red-500 fill-red-500 hover:bg-red-600/20 hover:text-red-600 hover:fill-red-600': order.status === OrderStatus.PENDING,
             'bg-blue-500/20 text-blue-500 fill-blue-500 hover:bg-blue-600/20 hover:text-blue-600 hover:fill-blue-600': order.status === OrderStatus.PAID,
-            'bg-emerald-500/20 text-emerald-500 fill-emerald-500 hover:bg-emerald-600/20 hover:text-emerald-600 hover:fill-emerald-600': order.status === OrderStatus.PACKED,
-            'bg-slate-500/20 text-slate-500 fill-slate-500 hover:bg-slate-600/20 hover:text-slate-600 hover:fill-emerald-600': order.status === OrderStatus.INVOICE_SENT,
+            'bg-amber-500/20 text-amber-500 fill-amber-500 hover:bg-amber-600/20 hover:text-amber-600 hover:fill-amber-600': order.status === OrderStatus.INVOICE_SENT,
+            'bg-yellow-900/20 text-yellow-900 fill-yellow-900 hover:bg-yellow-950/20 hover:text-yellow-950 hover:fill-yellow-950': order.status === OrderStatus.PACKED,
+            'bg-emerald-500/20 text-emerald-500 fill-emerald-500 hover:bg-emerald-600/20 hover:text-emerald-600 hover:fill-emerald-600': order.status === OrderStatus.DELIVERED,
           })}
         >
           {order.status}
@@ -90,8 +93,9 @@ function Order({ order }: OrderProps) {
                   className={classNames('font-semibold italic self-start flex-none cursor-pointer', {
                     'bg-red-500/20 text-red-500 hover:bg-red-600/20 hover:text-red-600': status === OrderStatus.PENDING,
                     'bg-blue-500/20 text-blue-500 hover:bg-blue-600/20 hover:text-blue-600': status === OrderStatus.PAID,
-                    'bg-emerald-500/20 text-emerald-500 hover:bg-emerald-600/20 hover:text-emerald-600': status === OrderStatus.PACKED,
-                    'bg-slate-500/20 text-slate-500 hover:bg-slate-600/20 hover:text-slate-600': status === OrderStatus.INVOICE_SENT,
+                    'bg-yellow-900/20 text-yellow-900 hover:bg-yellow-950/20 hover:text-yellow-950': status === OrderStatus.PACKED,
+                    'bg-amber-500/20 text-amber-500 hover:bg-amber-600/20 hover:text-amber-600': status === OrderStatus.INVOICE_SENT,
+                    'bg-emerald-500/20 text-emerald-500 hover:bg-emerald-600/20 hover:text-emerald-600': status === OrderStatus.DELIVERED,
                   })}
                 >
                   {status}
@@ -103,6 +107,7 @@ function Order({ order }: OrderProps) {
           </div>
         )}
       </div>
+
       <div className="flex items-center gap-x-2 mt-4">
         <Envelope className="fill-primary-light size-3 md:size-4 flex-none" />
         <p className="text-primary-light text-xs md:text-sm">{order.email}</p>
@@ -116,27 +121,38 @@ function Order({ order }: OrderProps) {
         <p className="text-primary-light text-xs md:text-sm">{order.address}</p>
       </div>
 
-      <div className="flex items-center justify-between mt-6">
-        <Badge className="relative bg-orange-500/20 text-orange-500 hover:bg-orange-600/20 hover:text-orange-600 font-semibold cursor-pointer" onClick={togglePurchasedProducts}>
-          {order.purchasedProducts.reduce((prev, curr) => (prev + curr.qty), 0)} items
-        </Badge>
-        <div className="flex items-center gap-x-2">
-          {event.type === EventType.MAIL_ORDER && (
-            <button className="flex items-center gap-x-2 px-4 py-2 text-sm font-bold bg-indigo-500 hover:bg-indigo-600 rounded-full text-white cursor-pointer" onClick={handleOpenShippingInfo}>
-              <Truck className="fill-white size-5" />
-              <span>Shipping Info</span>
-            </button>
-          )}
-          <button className="flex items-center gap-x-2 px-4 py-2 text-xs md:text-sm font-bold bg-emerald-500 hover:bg-emerald-600 rounded-full text-white cursor-pointer" onClick={handleOpenInvoice} disabled={isInvoiceOpen}>
-            {isInvoiceOpen ? (
-              <Loader className="size-3.5 md:size-5 fill-white animate-spin duration-1000" />
-            ) : (
-              <>
-                <Receipt className="fill-white size-3.5 md:size-5" />
-                <span>Send Invoice</span>
-              </>
+      <div className="grow flex items-end">
+        <div className="flex w-full items-center justify-between mt-6">
+          <Badge className="relative bg-orange-500/20 text-orange-500 hover:bg-orange-600/20 hover:text-orange-600 font-semibold cursor-pointer" onClick={togglePurchasedProducts}>
+            {order.purchasedProducts.reduce((prev, curr) => (prev + curr.qty), 0)} items
+          </Badge>
+          <div className="flex items-center gap-x-2">
+            {event.type === EventType.MAIL_ORDER && (
+              <button className="flex items-center gap-x-2 px-4 py-2 text-sm font-bold bg-blue-800 hover:bg-blue-900 rounded-full text-white cursor-pointer" onClick={handleOpenShippingInfo}>
+                {isShippingInfoOpen ? (
+                  <Loader className="size-3.5 md:size-5 fill-white animate-spin duration-1000" />
+                ) : (
+                  <>
+                    <Truck className="fill-white size-5" />
+                    <span>Shipping Info</span>
+                  </>
+                )}
+              </button>
             )}
-          </button>
+
+            {order.status === OrderStatus.PENDING && (
+              <button className="flex items-center gap-x-2 px-4 py-2 text-xs md:text-sm font-bold bg-emerald-500 hover:bg-emerald-600 rounded-full text-white cursor-pointer" onClick={handleOpenInvoice} disabled={isInvoiceOpen}>
+                {isInvoiceOpen ? (
+                  <Loader className="size-3.5 md:size-5 fill-white animate-spin duration-1000" />
+                ) : (
+                  <>
+                    <Receipt className="fill-white size-3.5 md:size-5" />
+                    <span>Send Invoice</span>
+                  </>
+                )}
+              </button>
+            )}
+          </div>
         </div>
       </div>
 
@@ -151,6 +167,10 @@ function Order({ order }: OrderProps) {
 
       {isInvoiceOpen && (
         <Invoice className="top-0 left-0 -z-10" eventName={`${event.name} ${event.type}`} orderNumber={order.rowNo - 1} purchasedProducts={order.purchasedProducts} recipient={order.customer} recipientEmail={order.email} onFinishGenerated={() => setIsInvoiceOpen(false)} key={order.timestamp} />
+      )}
+
+      {isShippingInfoOpen && (
+        <ShippingInfo eventName={`${event.name} ${event.type}`} recipient={order.customer} address={order.address} phoneNumber={order.phoneNumber} className="top-0 left-0 -z-10" onFinishGenerated={() => setShippingInfoOpen(false)}/>
       )}
     </div>
   )

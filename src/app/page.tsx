@@ -13,6 +13,7 @@ import { getUpcomingEvents, getIsLoading as getUpcomingEventsIsLoading } from "@
 
 import { Event } from "@/components/cards/Event";
 import { Container } from "@/components/Container";
+import { EmptyEvent } from "@/components/cards/EmptyEvent";
 import { SkeletonEvent } from "@/components/skeletons/SkeletonEvent";
 
 function AppPage() {
@@ -46,11 +47,13 @@ function AppPage() {
               <SkeletonEvent count={2} />
             ) : (
               <>
-                {upcomingEvents.map(event => (
+                {upcomingEvents.length > 0 ? upcomingEvents.map(event => (
                   <Event
                     event={event}
                     key={event.notionPageID} />
-                ))}
+                )) : (
+                  <EmptyEvent/>
+                )}
               </>
             )}
           </div>
@@ -63,11 +66,13 @@ function AppPage() {
               <SkeletonEvent count={3} />
             ) : (
               <>
-                {pastEvents.map(event => (
+                {pastEvents.length > 0 ? pastEvents.map(event => (
                   <Event
                     event={event}
                     key={event.notionPageID} />
-                ))}
+                )) : (
+                  <EmptyEvent/>
+                )}
               </>
             )}
           </div>

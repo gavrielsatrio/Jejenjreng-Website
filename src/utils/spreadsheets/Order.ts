@@ -77,7 +77,7 @@ async function getOrder({ spreadsheetID, eventType, rowNo }: OrderParams) {
     customer: dataObject[dataKeys[ColumnIndex.NAME]],
     email: dataObject[dataKeys[ColumnIndex.EMAIL]],
     address: dataObject[dataKeys[ColumnIndex.ADDRESS]],
-    phoneNumber: dataObject[dataKeys[ColumnIndex.PHONENUMBER]],
+    phoneNumber: dataObject[dataKeys[ColumnIndex.PHONENUMBER]].substring(0, 2).replace("8", "08").replace("+62", "0") + dataObject[dataKeys[ColumnIndex.PHONENUMBER]].substring(2),
     socialMedia: dataObject[dataKeys[ColumnIndex.SOCIALMEDIA]],
     purchasedProducts,
     preferedExpedition: eventType === EventType.MAIL_ORDER ? dataObject[dataKeys[dataKeys.length - 1]] : undefined
@@ -134,7 +134,7 @@ async function getOrders({ spreadsheetID, eventType }: OrderParams) {
       customer: dataObject[dataKeys[ColumnIndex.NAME]],
       email: dataObject[dataKeys[ColumnIndex.EMAIL]],
       address: dataObject[dataKeys[ColumnIndex.ADDRESS]],
-      phoneNumber: dataObject[dataKeys[ColumnIndex.PHONENUMBER]],
+      phoneNumber: dataObject[dataKeys[ColumnIndex.PHONENUMBER]].substring(0, 2).replace("8", "08").replace("+62", "0") + dataObject[dataKeys[ColumnIndex.PHONENUMBER]].substring(2),
       socialMedia: dataObject[dataKeys[ColumnIndex.SOCIALMEDIA]],
       purchasedProducts,
       preferedExpedition: eventType === EventType.MAIL_ORDER ? dataObject[dataKeys[dataKeys.length - 1]] : undefined

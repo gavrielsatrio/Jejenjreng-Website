@@ -1,3 +1,5 @@
+'use client'
+
 import dayjs from "dayjs";
 import numeral from "numeral"
 import html2canvas from "html2canvas-pro";
@@ -6,6 +8,7 @@ import { Fragment, useEffect, useRef } from "react"
 import { getProducts } from "@/slices/products/selector";
 import { useAppSelector } from "@/hooks/useAppSelector";
 import { sendInvoiceEmail } from "@/utils/mails";
+
 import { IPurchasedProduct } from "@/interfaces/models/IPurchasedProduct";
 
 interface InvoiceProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -18,13 +21,13 @@ interface InvoiceProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 function Invoice({
+  className,
   eventName,
   recipient,
-  recipientEmail,
   orderNumber,
+  recipientEmail,
   purchasedProducts,
-  className,
-  onFinishGenerated = () => { }
+  onFinishGenerated = () => {}
 }: InvoiceProps) {
   const invoiceRef = useRef<HTMLDivElement>(null);
   const products = useAppSelector(getProducts);
@@ -52,7 +55,7 @@ function Invoice({
 
     const link = document.createElement('a');
     link.href = dataURL;
-    link.download = `${recipient}-${eventName}.jpeg`;
+    link.download = `${recipient.toUpperCase()}-${eventName.toUpperCase()}.jpeg`;
     link.click();
 
     onFinishGenerated();
@@ -64,19 +67,13 @@ function Invoice({
 
   return (
     <div className={`absolute w-2xl bg-primary px-6 py-10 overflow-hidden ${className}`} ref={invoiceRef}>
-      {/* <img src="/assets/fox-transparent.png" loading="lazy" alt="Fox Image" className="absolute bottom-4 -left-20 z-10 h-72 w-5/8 object-contain object-left"/> */}
       <img src="/assets/jeje2.png" loading="lazy" alt="Fox Image" className="absolute -bottom-20 -left-8 z-10 w-1/2 object-contain object-right"/>
       <img src="/assets/ornament-transparent.png" loading="lazy" alt="Ornament Image" className="absolute top-0 right-0 z-0 h-80 translate-x-1/2 -translate-y-1/3"/>
       <img src="/assets/ornament-transparent.png" loading="lazy" alt="Ornament Image" className="absolute bottom-0 left-0 z-0 h-[30rem] -translate-x-1/2 translate-y-8"/>
       <img src="/assets/ornament2-transparent.png" loading="lazy" alt="Ornament Image" className="absolute top-0 left-0 z-10 size-24"/>
-      {/* <Image width={2048} height={1454} alt="Fox Image" src="/assets/fox-transparent.png" className="absolute bottom-4 -left-20 z-10 h-72 w-5/8 object-contain object-left" />
-      <Image width={547} height={456} alt="Ornament Image" src="/assets/ornament-transparent.png" className="absolute top-0 right-0 z-0 h-80 translate-x-1/2 -translate-y-1/3" />
-      <Image width={547} height={456} alt="Ornament Image" src="/assets/ornament-transparent.png" className="absolute bottom-0 left-0 z-0 h-[30rem] -translate-x-1/2 translate-y-8" />
-      <Image width={150} height={150} alt="Ornament Image" src="/assets/ornament2-transparent.png" className="absolute top-0 left-0 z-10 size-24" /> */}
 
       <div className="relative bg-secondary-lighter rounded-3xl flex flex-col p-6 tracking-widest z-30">
         <img src="/assets/ornament2-transparent.png" loading="lazy" alt="Ornament Image" className="absolute bottom-0 right-0 z-10 size-24 translate-x-1/4 translate-y-1/2"/>
-        {/* <Image width={150} height={150} alt="Ornament Image" src="/assets/ornament2-transparent.png" className="absolute bottom-0 right-0 z-10 size-24 translate-x-1/4 translate-y-1/2" /> */}
 
         <div className="font-shrikhand flex justify-between items-center uppercase">
           <h3 className="text-2xl text-primary font-shrikhand">INVOICE</h3>
@@ -130,9 +127,7 @@ function Invoice({
       </div>
 
       <div className="relative mt-16 flex flex-col justify-end items-end mx-12">
-        <h3 className="text-5xl font-shrikhand w-fit text-secondary-lighter tracking-widest leading-10" style={{
-          lineHeight: '40px'
-        }}>Terima<br />Kasih!</h3>
+        <h3 className="text-5xl font-shrikhand w-fit text-secondary-lighter tracking-widest leading-10">Terima<br />Kasih!</h3>
         <div className="w-3/4 rounded-s-3xl bg-secondary-lighter -mx-18 mt-8 py-6 ps-10 tracking-wide">
           <h4 className="text-primary font-shrikhand">Payment details</h4>
           <div className="grid grid-cols-2 gap-2 text-primary-light font-hammersmith-one text-xs mt-2">
