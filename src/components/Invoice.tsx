@@ -1,3 +1,5 @@
+'use client'
+
 import dayjs from "dayjs";
 import numeral from "numeral"
 import html2canvas from "html2canvas-pro";
