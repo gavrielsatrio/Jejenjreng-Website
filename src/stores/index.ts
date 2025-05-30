@@ -1,8 +1,9 @@
 import { configureStore } from "@reduxjs/toolkit";
 
 import { event } from "@/slices/event";
-import { orders } from "@/slices/orders";
+import { order } from "@/slices/order";
 import { events } from "@/slices/events";
+import { orders } from "@/slices/orders";
 import { products } from "@/slices/products";
 import { pastEvents } from "@/slices/past-events";
 import { upcomingEvents } from "@/slices/upcoming-events";
@@ -14,6 +15,7 @@ export const makeStore = () => {
       events: events.reducer,
       upcomingEvents: upcomingEvents.reducer,
       pastEvents: pastEvents.reducer,
+      order: order.reducer,
       orders: orders.reducer,
       products: products.reducer,
     },

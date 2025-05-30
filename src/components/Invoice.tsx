@@ -6,8 +6,9 @@ import html2canvas from "html2canvas-pro";
 import { Fragment, useEffect, useRef } from "react"
 
 import { getProducts } from "@/slices/products/selector";
+import { sendInvoice } from "@/slices/order";
+import { useAppDispatch } from "@/hooks/useAppDispatch";
 import { useAppSelector } from "@/hooks/useAppSelector";
-import { sendInvoiceEmail } from "@/utils/mails";
 
 import { EventType } from "@/enums/EventType";
 import { IPurchasedProduct } from "@/interfaces/models/IPurchasedProduct";
@@ -36,6 +37,8 @@ function Invoice({
   shippingExpedition,
   onFinishGenerated = () => { }
 }: InvoiceProps) {
+  const dispatch = useAppDispatch();
+
   const invoiceRef = useRef<HTMLDivElement>(null);
   const products = useAppSelector(getProducts);
 
@@ -55,11 +58,11 @@ function Invoice({
 
     const dataURL = canvas.toDataURL("image/jpeg");
 
-    // await sendInvoiceEmail({
-    //   recipient: recipientEmail,
-    //   subject: `Jejenjreng's ${eventName} PO`,
-    //   invoiceImage: dataURL
-    // });
+    dispatch(sendInvoice({
+      subject: `Jejenjreng's ${eventName} PO`,
+      recipient: recipientEmail,
+      invoiceImage: dataURL
+    }));
 
     const link = document.createElement('a');
     link.href = dataURL;
