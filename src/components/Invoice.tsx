@@ -9,8 +9,9 @@ import { getProducts } from "@/slices/products/selector";
 import { useAppSelector } from "@/hooks/useAppSelector";
 import { sendInvoiceEmail } from "@/utils/mails";
 
-import { IPurchasedProduct } from "@/interfaces/models/IPurchasedProduct";
 import { EventType } from "@/enums/EventType";
+import { IPurchasedProduct } from "@/interfaces/models/IPurchasedProduct";
+import { INVOICE_ACCOUNT_NO, INVOICE_BANK_NAME, INVOICE_EMAIL, INVOICE_PHONE_NO } from "@/configs/apps/Invoice";
 
 interface InvoiceProps extends React.HTMLAttributes<HTMLDivElement> {
   eventName: string;
@@ -156,10 +157,10 @@ function Invoice({
         <div className="w-3/4 rounded-s-3xl bg-secondary-lighter -mx-18 mt-8 py-6 ps-10 tracking-wide">
           <h4 className="text-primary font-shrikhand">Payment details</h4>
           <div className="grid grid-cols-2 gap-2 text-primary-light font-hammersmith-one text-xs mt-2">
-            <p className="col-span-1">Bank Name: <br />BCA a.n. Hisana</p>
-            <p className="col-span-1">Email: <br />jejegenjang@gmail.com</p>
-            <p className="col-span-1">Account No: <br />7401937939</p>
-            <p className="col-span-1">Phone No: <br />+6287748274701</p>
+            <p className="col-span-1">Bank Name: <br />{INVOICE_BANK_NAME}</p>
+            <p className="col-span-1">Email: <br />{INVOICE_EMAIL}</p>
+            <p className="col-span-1">Account No: <br />{INVOICE_ACCOUNT_NO}</p>
+            <p className="col-span-1">Phone No: <br />{INVOICE_PHONE_NO}</p>
           </div>
         </div>
       </div>
