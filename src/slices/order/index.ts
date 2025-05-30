@@ -59,6 +59,9 @@ export const order = createSlice({
 export const sendInvoice = createAsyncThunk<Array<IOrder>, SendInvoiceProps>('order/sendInvoice', async ({ subject, recipient, invoiceImage }) => {
   const request = await fetch(`/api/invoices`, {
     method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
     body: JSON.stringify({
       subject,
       recipient,

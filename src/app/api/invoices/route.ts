@@ -1,5 +1,5 @@
-import { sendInvoiceEmail } from "@/utils/mails";
 import { NextRequest } from "next/server";
+import { sendInvoiceEmail } from "@/utils/mails";
 
 interface InvoiceBody {
   recipient: string;
